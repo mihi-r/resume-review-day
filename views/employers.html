@@ -17,12 +17,14 @@
             <div class="title">
                 <h1>Resume Review Day Employer Registration</h1>
             </div>
-            <p>Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for 20 minute intervals to receive resume feedback from industry leaders and also gives students the ability to network with employers before the Technical Career Fair. <br><br>
-            
-                It is also used as a chance for employers to build student relations, as well as get face-to-face time with additional students that might be seeking a co-op at no cost to them. The event will be 9 AM - 3 PM with a 1 hour lunch break from 12 PM - 1 PM. Breakfast and Lunch will be provided, as well as a parking pass for when you leave. <br><br>
+            <div class="intro-info">
+                <p>Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for 20 minute intervals to receive resume feedback from industry leaders and also gives students the ability to network with employers before the Technical Career Fair. <br><br>
         
-                Please provide the following information about yourself and your company.  If you are registering for someone else, please ensure that we have the information of the person who will be attending the event, as the specified email address and phone number will be used for all future contact regarding the Resume Review Day.  Resume Review Day will be on Friday, February 8th and the hours are 9 AM to 3 PM, but you are welcome to come for as many or as few hours as you like.<br /><br />If you have any questions, please contact us at <a href="mailto:careerfair@uc.edu">careerfair@uc.edu</a>.
-            </p>
+                    It is also used as a chance for employers to build student relations, as well as get face-to-face time with additional students that might be seeking a co-op at no cost to them. The event will be 9 AM - 3 PM with a 1 hour lunch break from 12 PM - 1 PM. Breakfast and Lunch will be provided, as well as a parking pass for when you leave. <br><br>
+            
+                    Please provide the following information about yourself and your company.  If you are registering for someone else, please ensure that we have the information of the person who will be attending the event, as the specified email address and phone number will be used for all future contact regarding the Resume Review Day.  Resume Review Day will be on Friday, February 8th and the hours are 9 AM to 3 PM, but you are welcome to come for as many or as few hours as you like.<br /><br />If you have any questions, please contact us at <a href="mailto:careerfair@uc.edu">careerfair@uc.edu</a>.
+                </p>
+            </div>
             <form>
                 <input type="text" id="name" name="name" placeholder="Full Name" autocomplete="off" required>
 
@@ -35,15 +37,17 @@
                 <input type="text" id="dietary" name="dietary" placeholder="Dietary Restrictions (if applicable)" autocomplete="off">
                 
                 <div class="time-select" id="start-time">
-                    <select required>
-                        <option value="" disabled="disabled" selected="selected">▼ Select Start Time</option>
+                    <label>Start Time:</label>
+                    <select autocomplete="off" required>
+                        <option value="" disabled="disabled" selected="selected">▼ Select Time</option>
                     </select>
                     <div class="select__arrow"></div>
                 </div>
 
                 <div class="time-select" id="end-time">
-                    <select required>
-                        <option value="" disabled="disabled" selected="selected">▼ Select End Time</option>
+                    <label>End Time:</label>
+                    <select autocomplete="off" required>
+                        <option value="" disabled="disabled" selected="selected">▼ Select Time</option>
                     </select>
                     <div class="select__arrow"></div>
                 </div>
@@ -65,6 +69,6 @@
         <p></p>
     </div>
 
-    <script src="../build/main.min.js" type="text/javascript"></script>
+    <script src="../build/scripts/employers.bundle.js" type="text/javascript"></script>
 </body>
 </html>

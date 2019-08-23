@@ -1,13 +1,14 @@
 const gulp = require('gulp');
 const autoprefixer = require('gulp-autoprefixer');
-const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
-const rollup = require('rollup-stream');
 const rename = require('gulp-rename');
-const replace = require('gulp-replace');
 const purge = require('gulp-css-purge');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
+const browserify = require('browserify');
+const tsify = require('tsify');
+const es = require('event-stream');
+const sourcemaps = require('gulp-sourcemaps');
 
 const styles = function () {
   return gulp
@@ -27,63 +28,69 @@ const styles = function () {
     .pipe(gulp.dest('./build/'));
 }
 
-const rollupFile = function(inputPath, outputFilename) {
-  return rollup({
-      input: inputPath,
-      format: 'cjs'
+const scripts = function () {
+  const entryFiles = ['scripts/employers.ts', 'scripts/students.ts'];
+
+  const tasks = entryFiles.map((entryFile) => {
+    return browserify({
+      basedir: '.',
+      debug: true,
+      entries: ['scripts/employers.ts'],
+      cache: {},
+      packageCache: {}
     })
-    .pipe(source(outputFilename))
-    .pipe(buffer())
-    .pipe(babel({
-      presets: [
-        ['@babel/preset-env', {
-          useBuiltIns: 'entry',
-          corejs: 3,
-        }],
-      ],
+    .plugin(tsify)
+    .bundle()
+    .pipe(source(entryFile))
+    .pipe(rename({
+        extname: '.bundle.js'
     }))
-    .pipe(uglify())
-    .pipe(gulp.dest('./build'));
-}
-
-const rollupDevFile = function(inputPath, outputFilename) {
-  return rollup({
-      input: inputPath,
-      format: 'cjs'
-    })
-    .pipe(source(outputFilename))
     .pipe(buffer())
-    .pipe(gulp.dest('./build'));
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('./'))
+  });
+
+  return es.merge.apply(null, tasks).pipe(gulp.dest('build'));
 }
 
-const employers = function () {
-  return rollupFile('./scripts/employers.js', 'employers.min.js');
-}
+const scriptsDev = function () {
+  const entryFiles = ['scripts/employers.ts', 'scripts/students.ts'];
 
-const students = function () {
-  return rollupFile('./scripts/students.js', 'students.min.js');
-}
+  const tasks = entryFiles.map((entryFile) => {
+    return browserify({
+      basedir: '.',
+      debug: true,
+      entries: ['scripts/employers.ts'],
+      cache: {},
+      packageCache: {}
+    })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source(entryFile))
+    .pipe(rename({
+        extname: '.bundle.js'
+    }))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.write('./'))
+  });
 
-const employersDev = function () {
-  return rollupDevFile('./scripts/employers.js', 'employers.min.js');
-}
-
-const studentsDev = function () {
-  return rollupDevFile('./scripts/students.js', 'students.min.js');
+  return es.merge.apply(null, tasks).pipe(gulp.dest('build'));
 }
 
 const watchFiles = function () {
-  gulp.watch('./scripts/*.js', gulp.series(employers, students));
+  gulp.watch(['./scripts/*.ts', './scripts/*/*.ts'], gulp.series(scripts));
   gulp.watch('./styles/*.css', gulp.series(styles));
 }
 
 const watchDevFiles = function () {
-  gulp.watch('./scripts/*.js', gulp.series(employersDev, studentsDev));
+  gulp.watch(['./scripts/*.ts', './scripts/*/*.ts'], gulp.series(scriptsDev));
   gulp.watch('./styles/*.css', gulp.series(styles));
 }
 
-const watch = gulp.parallel(employers, students, styles, watchFiles);
-const dev = gulp.parallel(employersDev, studentsDev, styles, watchDevFiles);
+const watch = gulp.parallel(scripts, styles, watchFiles);
+const dev = gulp.parallel(scripts, styles, watchDevFiles);
 
 exports.watch = watch;
 exports.dev = dev;
