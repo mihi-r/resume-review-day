@@ -25,7 +25,7 @@ body {
 .intro {
   min-height: 100vh;
   background: #cb2d3e;  /* fallback for old browsers */
-  background: linear-gradient(to top, #ef473a, #cb2d3e), url(../images/resume-review-day-banner.jpg);
+  background: linear-gradient(to top, #ef473a, #cb2d3e), url(../images/rhodes.jpg);
   background-size: cover;
   background-position: center;
   background-blend-mode: darken;
@@ -114,13 +114,8 @@ form {
 }
 
 form label {
-  padding: 12px 0px 0px;
   margin: 16px auto 0 5%;
   font-size: 15px;
-}
-
-form label[for=download] {
-  margin-bottom: 6px;
 }
 
 form input[type=text],
@@ -149,7 +144,7 @@ form input[type=email].missing,
 form input[type=time].missing,
 form input[type=file].missing,
 form textarea.missing {
-  border-bottom: 2px solid #e00122;
+    border-bottom: 2px solid #e00122;
 }
 
 form h3 {
@@ -211,149 +206,162 @@ form input[type=button]:hover {
 /* Time Selection */
 
 form .time-select {
-    margin: 8px auto;
-    width: 90%;
+  margin: 8px auto;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #ccc;
 }
 
-form .time-select  select {
-    appearance: none;
-    width: 100%;
-    cursor: pointer;
-    padding: 10px 0px;
-    outline: 0;
-    border: 0;
-    border-radius: 0;
-    border-bottom: 2px solid #ccc;
-    font-size: 15px;
-    background-color: rgb(255, 255, 255);
-    transition: 0.1s
+form .time-select label {
+  margin: auto;
+  width: 12%;
+
 }
 
-form .time-select  select::-ms-expand {
-    display: none;
+form .time-select select {
+  appearance: none;
+  width: 100%;
+  cursor: pointer;
+  padding: 10px 0px;
+  outline: 0;
+  border: 0;
+  border-radius: 0;
+  font-size: 15px;
+  background-color: rgb(255, 255, 255);
+  transition: 0.1s
 }
 
-form .time-select  select:focus {
-    border-bottom: 2px solid rgb(143, 143, 143);
+form .time-select select::-ms-expand {
+  display: none;
 }
 
-form .time-select  select:disabled {
-    opacity: 0.5;
-    pointer-events: none;
+form .time-select:focus-within {
+  border-bottom: 2px solid #8e8e8e;
 }
 
-form .time-select  select:required {
-    box-shadow: none;
+form .time-select select:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
-form .time-select  select:required:invalid {
-    color: rgb(134, 134, 134);
+form .time-select select:required {
+  box-shadow: none;
 }
 
-form .time-select  option[value=""][disabled] {
-    display: none;
+form .time-select select:required:invalid {
+  color: rgb(134, 134, 134);
+}
+
+form .time-select option[value=""][disabled] {
+  display: none;
+}
+
+form #end-time {
+  display: none;
 }
 
 /* Alumni Checkbox */
 
 form .form-checkbox
 {
-    appearance: none;
-    display: inline-block;
-    position: relative;
-    background-color: #f1f1f1;
-    color: rgb(255, 79, 79);
-    top: 10px;
-    height: 30px;
-    width: 30px;
-    border: 0;
-    border-radius: 8px;
-    cursor: pointer;
-    outline: none;
-    transition: 0.3s;
+  appearance: none;
+  display: inline-block;
+  position: relative;
+  background-color: #f1f1f1;
+  color: rgb(255, 79, 79);
+  top: 10px;
+  height: 30px;
+  width: 30px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  transition: 0.3s;
 }
 
 form .form-checkbox:checked::before
 {
-    position: absolute;
-    font: 13px/1 sans-serif;
-    font-weight: 600;
-    left: 10px;
-    top: 7px;
-    content: '\02143';
-    transform: rotate(40deg);
+  position: absolute;
+  font: 13px/1 sans-serif;
+  font-weight: 600;
+  left: 10px;
+  top: 7px;
+  content: '\02143';
+  transform: rotate(40deg);
 }
 
 form .form-checkbox:hover
 {
-    background-color: #f7f7f7;
+  background-color: #f7f7f7;
 }
 
 form .form-checkbox:checked
 {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 /* Major Checkbox */
 
 form .majors-container {
-    margin-left: 40px;
-    display: block;
+  margin-left: 40px;
+  padding-bottom: 20px;
+  display: block;
 }
 
 form .form-checkbox-list
 {
-    appearance: none;
-    position: relative;
-    background-color: #f1f1f1;
-    color: rgb(255, 79, 79);
-    top: 30px;
-    height: 30px;
-    width: 30px;
-    border: 0;
-    border-radius: 8px;
-    cursor: pointer;
-    outline: none;
-    transition: 0.3s;
+  appearance: none;
+  position: relative;
+  background-color: #f1f1f1;
+  color: rgb(255, 79, 79);
+  top: 30px;
+  height: 30px;
+  width: 30px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  transition: 0.3s;
 }
 form .form-checkbox-list:checked::before
 {
-    position: absolute;
-    font: 13px/1 sans-serif;
-    font-weight: 600;
-    left: 10px;
-    top: 7px;
-    content: '\02143';
-    transform: rotate(40deg);
+  position: absolute;
+  font: 13px/1 sans-serif;
+  font-weight: 600;
+  left: 10px;
+  top: 7px;
+  content: '\02143';
+  transform: rotate(40deg);
 }
 
 form .form-checkbox-list:hover
 {
-    background-color: #f7f7f7;
+  background-color: #f7f7f7;
 }
 
 form .form-checkbox-list:checked
 {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 form .majors-container label
 {
-    font-size: 15px;
-    color: #666;
-    cursor: pointer;
-    margin-left: 50px;
-    display: block;
-} 
+  font-size: 15px;
+  color: #666;
+  cursor: pointer;
+  margin: 0 50px;
+  display: block;
+}
 
 /* Sign Up Confirmation */
 
 .sign-up-confirmation {
-    border-radius: 5px;
-    padding: 20px 20px;
-    max-width: 960px;
-    margin: 40px auto;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px 0px;
-    background: rgb(226, 255, 206);
-    display: none;
+  border-radius: 5px;
+  padding: 20px 20px;
+  max-width: 960px;
+  margin: 40px auto;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px 0px;
+  background: rgb(226, 255, 206);
+  display: none;
 }

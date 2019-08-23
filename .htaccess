@@ -1,0 +1,3 @@
+# RewriteEngine on
+# RewriteRule ^(.*)$ views/students.html [R]
+# RewriteRule ^employers$ employers.html [R]
