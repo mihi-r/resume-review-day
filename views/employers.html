@@ -6,6 +6,7 @@
     <meta name="description" content="Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair.">
     <title>Resume Review Day Employer Registration</title>
     <link rel="stylesheet" type="text/css" href="../build/employers.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css">
 </head>
 <body>
     <div class="intro">
@@ -13,61 +14,81 @@
             <a href="https://tribunal.uc.edu"><img src="../images/tribunal_logo.png" alt="Tribunal logo"></a>
         </header>
 
-        <div class="container">
+        <div class="container registration-form">
             <div class="title">
                 <h1>Resume Review Day Employer Registration</h1>
             </div>
             <div class="intro-info">
-                <p>Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for 20 minute intervals to receive resume feedback from industry leaders and also gives students the ability to network with employers before the Technical Career Fair. <br><br>
+                <p>Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for <span class="review-interval"></span> minute intervals to receive resume feedback from industry leaders and gives students the ability to network with employers before the Technical Career Fair. <br><br>
         
-                    It is also used as a chance for employers to build student relations, as well as get face-to-face time with additional students that might be seeking a co-op at no cost to them. The event will be 9 AM - 3 PM with a 1 hour lunch break from 12 PM - 1 PM. Breakfast and Lunch will be provided, as well as a parking pass for when you leave. <br><br>
+                    It is also used as a chance for employers to build student relations, as well as get face-to-face time with additional students that might be seeking a co-op at no cost to them. The event will take place on <span class="event-date"></span> from <span class="event-time"></span> with breakfast in the morning and a lunch break from <span class="lunch-time"></span>. A parking pass voucher will also be provided. <br><br>
             
-                    Please provide the following information about yourself and your company.  If you are registering for someone else, please ensure that we have the information of the person who will be attending the event, as the specified email address and phone number will be used for all future contact regarding the Resume Review Day.  Resume Review Day will be on Friday, February 8th and the hours are 9 AM to 3 PM, but you are welcome to come for as many or as few hours as you like.<br /><br />If you have any questions, please contact us at <a href="mailto:careerfair@uc.edu">careerfair@uc.edu</a>.
+                    Please provide the following information about yourself and your company. You are welcome to come for as many or as few hours as you like. If you are registering for someone else, please ensure that we have the information of the person who will be attending the event, as the specified email address and phone number will be used for all future contact regarding the Resume Review Day.
+                    
+                    The last day to sign up will be on <span class="deadline"></span>. <br><br>
+                    
+                    If you have any questions, please contact us at <a class="admin-email"></a>.
                 </p>
             </div>
             <form>
-                <input type="text" id="name" name="name" placeholder="Full Name" autocomplete="off" required>
+                <input type="text" id="name" name="name" placeholder="Full Name" autocomplete="off" aria-label="Name" required>
 
-                <input type="text" id="company" name="company" placeholder="Company Name" autocomplete="off" required>
+                <input type="text" id="company" name="company" placeholder="Company Name" autocomplete="off" aria-label="Company Name" required>
                 
-                <input type="email" id="email" name="email" placeholder="Email" autocomplete="off" required>
+                <input type="email" id="email" name="email" placeholder="Email" autocomplete="off" aria-label="Email" required>
 
-                <input type="text" id="phone" name="phone" placeholder="Phone Number" autocomplete="off" required>
+                <input type="text" id="phone" name="phone" placeholder="Phone Number (xxx-xxx-xxxx)" autocomplete="off" aria-label="Phone" required>
 
-                <input type="text" id="dietary" name="dietary" placeholder="Dietary Restrictions (if applicable)" autocomplete="off">
+                <input type="text" id="dietary" name="dietary" placeholder="Dietary Restrictions (if applicable)" autocomplete="off" aria-label="Dietary Restrictions">
                 
                 <div class="time-select" id="start-time">
-                    <label>Start Time:</label>
-                    <select autocomplete="off" required>
-                        <option value="" disabled="disabled" selected="selected">▼ Select Time</option>
+                    <label for="start-time-select">Start Time:</label>
+                    <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
+                    <select id="start-time-select" autocomplete="off" required>
+                        <option value="" disabled="disabled" selected="selected">Select Time</option>
                     </select>
                     <div class="select__arrow"></div>
                 </div>
 
                 <div class="time-select" id="end-time">
-                    <label>End Time:</label>
-                    <select autocomplete="off" required>
-                        <option value="" disabled="disabled" selected="selected">▼ Select Time</option>
+                    <label for="end-time-select">End Time:</label>
+                    <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
+                    <select id="end-time-select" autocomplete="off" required>
+                        <option value="" disabled="disabled" selected="selected">Select Time</option>
                     </select>
                     <div class="select__arrow"></div>
                 </div>
 
-                <label for="alumni">UC Alumni</label>
-                <input type="checkbox" class="form-checkbox" id="alumni">
+                <label for="alumnus">UC Alumnus</label>
+                <input type="checkbox" class="form-checkbox" id="alumnus">
 
                 <h3>Select your major(s) of interest:</h3>
                 <div class="majors-container">
                 </div>
 
                 <input type="button" value="Sign Up" id="sign-up-button">
+                <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
             </form>
+        </div>
+
+        <div class="container event-closed">
+            <div class="detail-box">
+                <p>The registration is currently closed. Return soon for the next Resume Review Day!</p>
+            </div>
+        </div>
+
+        <div class="container registered">
+            <div class="detail-box">
+                <p class="success-emoji">🎉</p>
+                <p>We have sent you an email to <a class="admin-email"></a> confirming your reservation.</p>
+            </div>
         </div>
     </div>
 
-
-    <div class="sign-up-confirmation">
-        <p></p>
-    </div>
+    <footer>
+        <p>University of Cincinnati | © 2019 College of Engineering and Applied Science Tribunal </p>
+        <p>For any questions or comments, contact us at uc.eas.tribunal@gmail.com.</p>
+    </footer>
 
     <script src="../build/scripts/employers.bundle.js" type="text/javascript"></script>
 </body>
