@@ -6,13 +6,25 @@ interface Info {
     ​​​event_lunch_start_time: string;
     ​​​event_start_time: string;
     review_interval_minutes: string;
+    employers_deadline: string;
+    students_deadline: string;
+    employers_open: string;
+    students_open: string;
 }
 
 export interface APIResponse {
-    data: Array<Object>;
+    data: any;
     status: string;
 }
 
 export interface InfoAPIResponse extends APIResponse {
-    data: Array<Info>;
+    data: Info;
+}
+
+export interface MajorsAPIResponse extends APIResponse {
+    data: Array<string>;
+}
+
+export interface RegistrationAPIResponse extends APIResponse {
+    data: string;
 }
