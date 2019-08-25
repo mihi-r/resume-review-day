@@ -30,15 +30,15 @@ $result = $mysqli->query($sql);
 
 if ($result) {
     while ($row = $result->fetch_assoc()) {
-        $result_data->data->event_date = date("F jS, Y", strtotime($row['event_date']));
+        $result_data->data->event_date = date('l, F jS, Y', strtotime($row['event_date']));
         $result_data->data->event_start_time = $row['event_start_time'];
         $result_data->data->event_end_time = $row['event_end_time'];
         $result_data->data->event_lunch_start_time = $row['event_lunch_start_time'];
         $result_data->data->event_lunch_end_time = $row['event_lunch_end_time'];
         $result_data->data->review_interval_minutes = $row['review_interval_minutes'];
         $result_data->data->admin_email = $row['admin_email'];
-        $result_data->data->employers_deadline = date("F jS, Y", strtotime($row['employers_deadline']));
-        $result_data->data->students_deadline = date("F jS, Y", strtotime($row['students_deadline']));
+        $result_data->data->employers_deadline = date('l, F jS, Y', strtotime($row['employers_deadline']));
+        $result_data->data->students_deadline = date('l, F jS, Y', strtotime($row['students_deadline']));
         $result_data->data->employers_open = $row['employers_open'];
         $result_data->data->students_open = $row['students_open'];
     }

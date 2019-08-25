@@ -107,8 +107,8 @@ if (!$result) {
 $email_subject = "University of Cincinnati Technical Resume Review Day Registration Confirmation";
 
 $email_msg = "Hello " . $name . ", \n \n";
-$email_msg = "Thank you for creating a registration for the University of Cincinnati Technical Resume Review Day. ";
-$email_msg .= "The event will take place on " . date("F jS, Y", strtotime($event_date)) . ". ";
+$email_msg .= "Thank you for creating a registration for the University of Cincinnati Technical Resume Review Day. ";
+$email_msg .= "The event will take place on " . date("l, F jS, Y", strtotime($event_date)) . ". ";
 $email_msg .= "We will be reaching out to you shortly with an employer information packet and a folder of student resumes. \n \n";
 $email_msg .= "Please confirm the information below is correct. \n \n";
 $email_msg .= "Name: " . $name . "\n";
@@ -119,7 +119,7 @@ $email_msg .= "Start Time: " . date("g:i a", strtotime($start_time)) . "\n";
 $email_msg .= "End Time: " . date("g:i a", strtotime($end_time)) . "\n";
 $email_msg .= "Alumnus: " . $alumnus . "\n";
 $email_msg .= "Majors Interested: " . $majors . "\n \n";
-$email_msg .= "If you would like to make any changes to the information you have submitted, please reply to this email. Alternatively, you can email " . $admin_email . " \n \n";
+$email_msg .= "If you would like to make any changes to the information you have submitted, please reply to this email. Alternatively, you can email " . $admin_email . ". \n \n";
 $email_msg .= "We look forward to seeing you at the event! \n \n";
 $email_msg .= "Thank you, \n";
 $email_msg .= "CEAS Tribunal";

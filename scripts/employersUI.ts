@@ -170,20 +170,20 @@ export const phoneNumberFormater = function () {
 */
 const getAllMajorsSelected = function() {
     const majorContainerCheckboxes = document.querySelectorAll('form .majors-container .form-checkbox-list') as NodeListOf<HTMLInputElement>;
-    let majorsText = "";
+    let majorsText = '';
 
     majorContainerCheckboxes.forEach((element, i) => {
         if (majorContainerCheckboxes[i].checked == true) {
             const checkboxId = majorContainerCheckboxes[i].getAttribute('id'); 
             const majorLabel = document.querySelector(`form .majors-container label[for="${checkboxId}"]`);
             if (majorLabel !== null) {
-                majorsText += `${majorLabel.textContent},`;
+                majorsText += `${majorLabel.textContent}, `;
             }
         }
     });
 
     if (majorsText != '') {
-        majorsText = majorsText.slice(0, -1);
+        majorsText = majorsText.slice(0, -2);
     }
 
     return majorsText;
