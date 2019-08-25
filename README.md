@@ -58,4 +58,4 @@ For production, you will need to provide the missing constants and update the da
 ### Making changes
 1. Run `gulp watch`.
 2. Make your desired change.
-3. Visit the webpage and clear browser cache (<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>3</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>3</kbd>).
+3. Visit the webpage and clear browser cache (<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>r</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>r</kbd>).
