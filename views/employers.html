@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair.">
     <title>Resume Review Day Employer Registration</title>
+    <link rel="stylesheet" type="text/css" href="../build/main.min.css">
     <link rel="stylesheet" type="text/css" href="../build/employers.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css">
 </head>
@@ -41,22 +42,20 @@
 
                 <input type="text" id="dietary" name="dietary" placeholder="Dietary Restrictions (if applicable)" autocomplete="off" aria-label="Dietary Restrictions">
                 
-                <div class="time-select" id="start-time">
+                <div class="select-container" id="start-time">
                     <label for="start-time-select">Start Time:</label>
                     <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
                     <select id="start-time-select" autocomplete="off" required>
                         <option value="" disabled="disabled" selected="selected">Select Time</option>
                     </select>
-                    <div class="select__arrow"></div>
                 </div>
 
-                <div class="time-select" id="end-time">
+                <div class="select-container" id="end-time">
                     <label for="end-time-select">End Time:</label>
                     <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
                     <select id="end-time-select" autocomplete="off" required>
                         <option value="" disabled="disabled" selected="selected">Select Time</option>
                     </select>
-                    <div class="select__arrow"></div>
                 </div>
 
                 <label for="alumnus">UC Alumnus</label>
