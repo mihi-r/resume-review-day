@@ -2,9 +2,10 @@ interface Info {
     admin_email: string;
     ​​​event_date: string;
     event_end_time: string;
+    ​​​event_start_time: string;
     event_lunch_end_time: string;
     ​​​event_lunch_start_time: string;
-    ​​​event_start_time: string;
+    event_location: string;
     review_interval_minutes: string;
     employers_deadline: string;
     students_deadline: string;

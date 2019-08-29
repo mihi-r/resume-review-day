@@ -7,6 +7,7 @@ export class EventInfo {
     public endTime: string;
     public lunchStartTime: string;
     public lunchEndTime: string;
+    public location: string;
     public reviewInterval: number;
     public adminEmail: string;
     public employersDeadline: string;
@@ -33,6 +34,7 @@ export class EventInfo {
                 this.endTime = info.event_end_time;
                 this.lunchStartTime = info.event_lunch_start_time;
                 this.lunchEndTime =info.event_lunch_end_time;
+                this.location = info.event_location;
                 this.reviewInterval = Number(info.review_interval_minutes);
                 this.adminEmail = info.admin_email;
                 this.employersDeadline = info.employers_deadline;
