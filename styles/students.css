@@ -1,2 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
+
+/* Major Select */
+.major-filter-form {
+  color: white;
+  max-width: 500px;
+}

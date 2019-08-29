@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 24, 2019 at 06:14 AM
+-- Generation Time: Aug 29, 2019 at 08:47 PM
 -- Server version: 5.6.38
 -- PHP Version: 7.2.1
 
@@ -33,6 +33,7 @@ CREATE TABLE `resume_review_info` (
   `event_end_time` time NOT NULL,
   `event_lunch_start_time` time NOT NULL,
   `event_lunch_end_time` time NOT NULL,
+  `event_location` varchar(256) NOT NULL,
   `review_interval_minutes` int(2) NOT NULL,
   `admin_email` varchar(256) NOT NULL,
   `employers_deadline` date NOT NULL,
