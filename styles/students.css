@@ -1,8 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
 
-/* Major Select */
-.major-filter-form {
-  color: white;
+/* Filter Form */
+.filter-form {
   max-width: 500px;
+}
+
+.filter-form input[type=button] {
+  background-color: #3f3f3f;
+  border: none;
+  border: 2px solid #e0012200;
+  transition: 0.4s;
+}
+
+.filter-form input[type=button]:hover {
+  color: #3f3f3f;
+  border: 2px solid #3f3f3f;
 }
