@@ -25,7 +25,7 @@ Prerequisites:
 10. On the newly opened MAMP webpage, go to Tools -> phpMyAdmin.
 11. Create a database called "tribunal" by clicking on "new" from the left-hand-side panel. Then, add in the name "tribunal" for the database name and select "utf8_general_ci" as the collation, and click "create".
 12. Click on the newly created tribunal database from the left-hand-side panel and click on import from the top toolbar. Import all the files from the schema folder (htdocs/schema). This will create the necessary tables for you.
-8. Now create a PHP file which will allow you to connect to the MAMP database. `cd` into api/includes and create a mysqli.php file. For development, the contents of the PHP file can like look like this:
+13. Now create a PHP file which will allow you to connect to the MAMP database. `cd` into api/includes and create a mysqli.php file. For development, the contents of the PHP file can like look like this:
 ```
 <?php
 //mysqli database connection
@@ -51,9 +51,9 @@ if (mysqli_connect_error()) {
 ```
 For production, you will need to provide the missing constants and update the database connection to use those.
 
-11. To set up linting, open VS Code and install the TSLint extension. Reload VS Code afterwards.
-12. Open up the htdocs directory in VS Code to start developing.
-13. To see the webpage, click on "Open WebStart page" from the MAMP Server and click on "My Website".
+14. To set up linting, open VS Code and install the TSLint extension. Reload VS Code afterwards.
+15. Open up the htdocs directory in VS Code to start developing.
+16. To see the webpage, click on "Open WebStart page" from the MAMP Server and click on "My Website".
 
 ### Making changes
 1. Run `gulp watch`.
