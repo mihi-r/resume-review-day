@@ -35,7 +35,7 @@ const scripts = function () {
     return browserify({
       basedir: '.',
       debug: true,
-      entries: ['scripts/employers.ts'],
+      entries: [entryFile],
       cache: {},
       packageCache: {}
     })
@@ -54,43 +54,11 @@ const scripts = function () {
   return es.merge.apply(null, tasks).pipe(gulp.dest('build'));
 }
 
-const scriptsDev = function () {
-  const entryFiles = ['scripts/employers.ts', 'scripts/students.ts'];
-
-  const tasks = entryFiles.map((entryFile) => {
-    return browserify({
-      basedir: '.',
-      debug: true,
-      entries: ['scripts/employers.ts'],
-      cache: {},
-      packageCache: {}
-    })
-    .plugin(tsify)
-    .bundle()
-    .pipe(source(entryFile))
-    .pipe(rename({
-        extname: '.bundle.js'
-    }))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({loadMaps: true}))
-    .pipe(sourcemaps.write('./'))
-  });
-
-  return es.merge.apply(null, tasks).pipe(gulp.dest('build'));
-}
-
 const watchFiles = function () {
   gulp.watch(['./scripts/*.ts', './scripts/*/*.ts'], gulp.series(scripts));
   gulp.watch('./styles/*.css', gulp.series(styles));
 }
 
-const watchDevFiles = function () {
-  gulp.watch(['./scripts/*.ts', './scripts/*/*.ts'], gulp.series(scriptsDev));
-  gulp.watch('./styles/*.css', gulp.series(styles));
-}
-
 const watch = gulp.parallel(scripts, styles, watchFiles);
-const dev = gulp.parallel(scripts, styles, watchDevFiles);
 
 exports.watch = watch;
-exports.dev = dev;

@@ -30,8 +30,7 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "scripts": {
-    "watch": "gulp watch",
-    "dev": "gulp dev"
+    "watch": "gulp watch"
   },
   "license": "MIT"
 }
