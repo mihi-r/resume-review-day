@@ -51,6 +51,10 @@ export interface MajorsAPIResponse extends APIResponse {
     data: Array<string>;
 }
 
+export interface YearsAPIResponse extends APIResponse {
+    data: Array<string>;
+}
+
 export interface RegistrationAPIResponse extends APIResponse {
     data: string;
 }

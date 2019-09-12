@@ -59,28 +59,34 @@
 
     <div class="register">
         <div class="container">
-            <h2 id="registerTitle">Confirm Your Timeslot <i class="far fa-calendar-check"></i></h3> 
+            <h2 id="register-title">Confirm Your Timeslot <i class="far fa-calendar-check"></i></h3> 
             
             <form>
-                    <p>You have selected to get your resume reviewed with <span id="selectedCompanyName">Company A</span> at <span id="selectedCompanyTime">12:00 PM</span> for approximately 20 minutes. If you would like to change your timeslot, you can <a href="#timeSlotTitle">go back and select a different time</a>, otherwise, you can continue to register.</p>
+                <p>You have selected to get your resume reviewed with <span class="selected-company-name">Company A</span> at <span class="selected-company-time">12:00 PM</span> for approximately <span class="review-interval"></span> minutes. If you would like to change your timeslot, you can <a href="#timeslot-title">go back and select a different time</a>, otherwise, you can continue to register.</p>
+
                 <input type="text" id="name" name="name" placeholder="Full Name" autocomplete="off" required>
 
                 <input type="email" id="email" name="email" placeholder="Email" autocomplete="off" required>
 
-                <div class="major-select" id="year-select">
+                <div class="select-container" id="year-select">
+                    <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
                     <select required>
-                        <option value="" disabled="disabled" selected="selected">▼ Select Graduation Year</option>
+                        <option value="" disabled="disabled" selected="selected">Select Graduation Year</option>
                     </select>
                 </div>
 
-                <div class="major-select" id="student-major-select">
+                <div class="select-container" id="student-major-select">
+                    <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
                     <select required>
-                        <option value="" disabled="disabled" selected="selected">▼ Select Major</option>
+                        <option value="" disabled="disabled" selected="selected">Select Major</option>
                     </select>
                 </div>
-                <br>
-                <label for="resume-file">Upload Resume (PDF):</label>
-                <input type="file" id="resume-file" accept=".pdf">
+
+                <label for="resume-file" class="file-upload">
+                    <input type="file" id="resume-file" accept=".pdf">
+                    <div class="file-text"><i class="fas fa-file-upload"></i> <span>Upload Resume</span></div>
+                </label>
+
                 <input type="button" value="Register" id="register-button">
                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
             </form>
