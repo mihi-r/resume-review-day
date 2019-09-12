@@ -1,5 +1,6 @@
-import { updateDescription, generateMajorSelect, generateTimeSelect } from './studentsUI';
+import { updateDescription, generateMajorSelect, generateTimeSelect, filterAction } from './studentsUI';
 
 updateDescription();
 generateMajorSelect();
 generateTimeSelect();
+filterAction();

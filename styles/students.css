@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
 
 /* Filter Form */
+
 .filter-form {
   max-width: 500px;
 }
@@ -16,4 +17,90 @@
 .filter-form input[type=button]:hover {
   color: #3f3f3f;
   border: 2px solid #3f3f3f;
+}
+
+/* Timeslots */
+
+.timeslots {
+  display: none;
+  min-height: 100vh;
+  margin-bottom: 40px;
+}
+
+.employers {
+  display: flex;  
+  flex-wrap: wrap;
+  justify-content: left;
+}
+
+.container .employers table {
+  max-width: 300px;
+  margin: 0 10px 20px 10px;
+  border-collapse: collapse;
+}
+
+.container .employers table,
+.container .employers td,
+.container .employers th {
+  border: 1px solid #ddd;
+}
+
+.container .employers td,
+.container .employers th {
+  padding: 15px;
+}
+
+.container .employers th {
+  background: #cb2d3e;
+  color: white;
+}
+
+.container .employers .selected {
+  background: #ffdf9e;
+}
+
+.container .employers td:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.container .employers .company-info {
+  text-align: left;
+  cursor: default;
+  padding: 0px 20px;
+  background: #3f3f3f;
+  display: none;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: 0.1s;
+}
+
+.container .employers .company-info:hover {
+  background: #3f3f3f;
+}
+
+.container .employers .company-info hr {
+  border: 1px solid #777;
+}
+
+.container .employers .company-info-icon {
+  width: 10%;
+  cursor: pointer;
+  height: 0;
+  transition: 0.3s;
+}
+
+.container .employers .company-info-icon:hover {
+  color: #ffcc66;
+}
+
+.container .employers .not-found-message {
+  color: #dc6565;
+  text-align: center;
+}
+
+/* Register Form */
+
+.register {
+  display: none;
 }

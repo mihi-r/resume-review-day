@@ -1,4 +1,4 @@
-interface Info {
+interface EventInfo {
     admin_email: string;
     ​​​event_date: string;
     event_end_time: string;
@@ -13,13 +13,38 @@ interface Info {
     students_open: string;
 }
 
+interface EmployerInfo {
+    name: string;
+    company: string;
+    company_id: string;
+    start: string;
+    end: string;
+    majors: Array<string>;
+    unavailable_times: Array<string>
+}
+
+export interface Employer {
+    name: string;
+    company: string;
+    companyId: string;
+    start: string;
+    end: string;
+    majors: Array<string>;
+    unavailableTimes: Array<string>
+}
+
+export interface TimeInterval {
+    start: string;
+    end: string;
+}
+
 export interface APIResponse {
     data: any;
     status: string;
 }
 
-export interface InfoAPIResponse extends APIResponse {
-    data: Info;
+export interface EventInfoAPIResponse extends APIResponse {
+    data: EventInfo;
 }
 
 export interface MajorsAPIResponse extends APIResponse {
@@ -28,4 +53,8 @@ export interface MajorsAPIResponse extends APIResponse {
 
 export interface RegistrationAPIResponse extends APIResponse {
     data: string;
+}
+
+export interface EmployerInfoAPIResponse extends APIResponse {
+    data: Array<EmployerInfo>;
 }

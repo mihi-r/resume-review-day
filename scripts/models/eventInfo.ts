@@ -1,5 +1,5 @@
-import { InfoAPIResponse } from '../types/types'
-import { StatusConstants } from '../constants/statusConstants'
+import { EventInfoAPIResponse } from '../types/types';
+import { StatusConstants } from '../constants/statusConstants';
 
 export class EventInfo {
     public date: string;
@@ -23,7 +23,7 @@ export class EventInfo {
             method: 'GET'
         });
 
-        const data: InfoAPIResponse = await response.json();
+        const data: EventInfoAPIResponse = await response.json();
 
         if (data.status == StatusConstants.SUCCESS) {
             const info = data.data;
