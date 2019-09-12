@@ -4,6 +4,7 @@ import { displayWarning, generateSelectOption, generateTimeSelectOptions } from 
 import { EmployersInfo } from './models/employersInfo';
 import { Employer, TimeInterval } from './types/types';
 import { convertTo12HourString } from './common/utils';
+import { GradYears } from './models/gradYears';
 
 /** 
  * Update the description with the most recent event information.
@@ -72,6 +73,73 @@ export const generateTimeSelect = async function () {
     generateSelectOption(timeSelectElement, 'All Times', 'All Times');
     generateTimeSelectOptions(timeSelectElement, eventInfo.startTime, eventInfo.endTime, eventInfo.reviewInterval);
 };
+
+/**
+ * Generate the form to register for a timeslot.
+ * @param employer The employer information to display.
+ * @param selectedTime The chosen timeslot.
+ */
+const generateRegisterFrom = async function (employer: Employer, selectedTime: string) {
+    const eventInfo = new EventInfo();
+    
+    try {
+        await eventInfo.initData();
+    } catch {
+        displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
+    }
+
+    const registerContainer = document.querySelector('.register') as HTMLDivElement;
+    registerContainer.style.display = 'block';
+
+    registerContainer.scrollIntoView({behavior: 'smooth', block: 'start'})
+
+    const companyNameSpan = document.querySelector('.register .selected-company-name') as HTMLSpanElement;
+    const companyTimeSpan = document.querySelector('.register .selected-company-time') as HTMLSpanElement;
+    const reviewInterval = document.querySelector('.register .review-interval') as HTMLSpanElement;
+    const majorSelectElement = document.querySelector('.register #student-major-select select') as HTMLSelectElement;
+    const yearSelectElement = document.querySelector('.register #year-select select') as HTMLSelectElement;
+    const resumeUploadElement = document.querySelector('.register #resume-file') as HTMLInputElement;
+    const resumeUploadText = document.querySelector('.register .file-text span') as HTMLSpanElement;
+
+    companyNameSpan.textContent = employer.company;
+    companyTimeSpan.textContent = selectedTime;
+    reviewInterval.textContent = String(eventInfo.reviewInterval);
+
+    // Only generate majors if it hasn't been generated before
+    if (majorSelectElement.children.length === 1) {
+        const majors = new Majors();
+
+        try {
+            await majors.initData();
+        } catch {
+            displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
+        }
+    
+        majors.majors.forEach((major) => {
+            generateSelectOption(majorSelectElement, major, major);
+        })
+
+        const years = new GradYears();
+
+        try {
+            await years.initData();
+        } catch {
+            displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
+        }
+    
+        years.years.forEach((year) => {
+            generateSelectOption(yearSelectElement, year, year);
+        })
+    }
+
+    // Changes the text of the file upload to the name of the file
+    resumeUploadElement.onchange = function () {
+        if (resumeUploadElement.files !== null) {
+            const fileName = resumeUploadElement.files[0].name;
+            resumeUploadText.textContent = fileName;
+        }
+    };
+}
 
 /**
  * Generate a timeslot table for an employer. Timeslots will not be generated for the lunch break.
@@ -177,7 +245,13 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
                     companyTable.appendChild(tableTr);
         
                     tableTd.onclick = function(e) {
+                        const currentSelectedTime = document.querySelector('.employers .selected') as HTMLTableDataCellElement;
+                        if (currentSelectedTime != null) {
+                            currentSelectedTime.classList.toggle('selected');
+                        }
+                        
                         tableTd.classList.toggle('selected');
+                        generateRegisterFrom(employer, displayName);
                     }
                 }
             }

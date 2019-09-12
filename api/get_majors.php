@@ -14,8 +14,6 @@ $sql = "SELECT name FROM resume_review_majors";
 
 $result = $mysqli->query($sql);
 
-$majors = array();
-
 if ($result) {
 	while ($row = $result->fetch_assoc()) {
 		$result_data->data[] = $row['name'];
