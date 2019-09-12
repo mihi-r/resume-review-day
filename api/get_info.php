@@ -8,7 +8,7 @@ require_once('mysqli.php');
 if (!isset($result_data))
     $result_data = new stdClass();
 $result_data->status = 'error';
-$result_data->data = new stdClass();;
+$result_data->data = new stdClass();
 
 $result_data->data->event_date = "";
 $result_data->data->event_start_time = "";

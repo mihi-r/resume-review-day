@@ -49,6 +49,44 @@
         </div>
     </div>
 
+    <div class="timeslots">
+        <div class="container">
+            <h2 id="timeslot-title">Select Timeslot <i class="far fa-clock"></i></h3> 
+                <div class="employers"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="register">
+        <div class="container">
+            <h2 id="registerTitle">Confirm Your Timeslot <i class="far fa-calendar-check"></i></h3> 
+            
+            <form>
+                    <p>You have selected to get your resume reviewed with <span id="selectedCompanyName">Company A</span> at <span id="selectedCompanyTime">12:00 PM</span> for approximately 20 minutes. If you would like to change your timeslot, you can <a href="#timeSlotTitle">go back and select a different time</a>, otherwise, you can continue to register.</p>
+                <input type="text" id="name" name="name" placeholder="Full Name" autocomplete="off" required>
+
+                <input type="email" id="email" name="email" placeholder="Email" autocomplete="off" required>
+
+                <div class="major-select" id="year-select">
+                    <select required>
+                        <option value="" disabled="disabled" selected="selected">▼ Select Graduation Year</option>
+                    </select>
+                </div>
+
+                <div class="major-select" id="student-major-select">
+                    <select required>
+                        <option value="" disabled="disabled" selected="selected">▼ Select Major</option>
+                    </select>
+                </div>
+                <br>
+                <label for="resume-file">Upload Resume (PDF):</label>
+                <input type="file" id="resume-file" accept=".pdf">
+                <input type="button" value="Register" id="register-button">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            </form>
+        </div>
+    </div>
+
     <footer>
         <p>University of Cincinnati | © 2019 College of Engineering and Applied Science Tribunal </p>
         <p>For any questions or comments, contact us at uc.eas.tribunal@gmail.com.</p>

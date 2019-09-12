@@ -1,6 +1,9 @@
 import { EventInfo } from './models/eventInfo';
 import { Majors } from './models/majors';
 import { displayWarning, generateSelectOption, generateTimeSelectOptions } from './common/uiElements';
+import { EmployersInfo } from './models/employersInfo';
+import { Employer, TimeInterval } from './types/types';
+import { convertTo12HourString } from './common/utils';
 
 /** 
  * Update the description with the most recent event information.
@@ -44,7 +47,7 @@ export const generateMajorSelect = async function () {
         displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
     }
 
-    const majorSelectElement = document.querySelector("form #major-select select") as HTMLSelectElement;
+    const majorSelectElement = document.querySelector('form #major-select select') as HTMLSelectElement;
 
     generateSelectOption(majorSelectElement, 'All Majors', 'All Majors');
     majors.majors.forEach((major) => {
@@ -66,5 +69,180 @@ export const generateTimeSelect = async function () {
 
     const timeSelectElement = document.querySelector('form #time-select select') as HTMLSelectElement;
 
+    generateSelectOption(timeSelectElement, 'All Times', 'All Times');
     generateTimeSelectOptions(timeSelectElement, eventInfo.startTime, eventInfo.endTime, eventInfo.reviewInterval);
+};
+
+/**
+ * Generate a timeslot table for an employer. Timeslots will not be generated for the lunch break.
+ * @param container The container to add the generated table to.
+ * @param employer The employer information to use for the table.
+ * @param lunchStart The start time of the lunch break.
+ * @param lunchEnd The end time of the lunch break.
+ * @param interval The intervals for each timeslot.
+ * @param timeOption The timeslot to show. If 'All Times' is supplied, then all times will be shown.
+ */
+const generateEmployerTimeslots = function (container: HTMLDivElement, employer: Employer, lunchStart: string, lunchEnd: string, interval: number, timeOption: string) {
+    // Create table
+    const companyTable = document.createElement('table');
+    companyTable.setAttribute('class', 'company-times');
+    companyTable.setAttribute('id', `company-${employer.companyId}`);
+
+    // Create icon
+    const companyInfoIcon = document.createElement('i');
+    companyInfoIcon.setAttribute('class', 'fas fa-info-circle');
+
+    // Create company name header
+    let tableTr = document.createElement('tr');
+    const companyNameTh = document.createElement('th');
+    const companyInfoIconTh = document.createElement('th');
+    companyNameTh.textContent = employer.company;
+
+    companyInfoIconTh.appendChild(companyInfoIcon);
+    companyInfoIconTh.setAttribute('class', 'company-info-icon');
+
+    tableTr.appendChild(companyNameTh);
+    tableTr.appendChild(companyInfoIconTh);
+    companyTable.appendChild(tableTr);
+
+    // Create company info cell
+    tableTr = document.createElement('tr');
+    const companyInfoTd = document.createElement('td');
+    const representivePara = document.createElement('p');
+    const majorsPara = document.createElement('p');
+    const divider = document.createElement('hr');
+
+    representivePara.textContent = `Representive: ${employer.name}`;
+    majorsPara.textContent = `Majors: ${employer.majors.join(', ')}`;
+
+    companyInfoTd.setAttribute('colspan', '2');
+    companyInfoTd.setAttribute('class', 'company-info');
+
+    companyInfoTd.appendChild(representivePara);
+    companyInfoTd.appendChild(divider);
+    companyInfoTd.appendChild(majorsPara);
+    tableTr.appendChild(companyInfoTd);
+    companyTable.appendChild(tableTr);
+
+    companyInfoIconTh.onclick = (() => {
+        if (companyInfoTd.style.display == 'table-cell') {
+            companyInfoTd.style.transform = 'scaleY(0)';
+
+            setTimeout(function() {
+                companyInfoTd.style.display = 'none';
+            }, 100);
+        } else {
+            companyInfoTd.style.display = 'table-cell';
+
+            setTimeout(function() {
+                companyInfoTd.style.transform = 'scaleY(1)';
+            }, 100);
+        }
+    })
+
+    const firstTimeInterval: TimeInterval = {
+        start: employer.start,
+        end: lunchStart
+    }
+
+    const secondTimeInterval: TimeInterval = {
+        start: lunchEnd,
+        end: employer.end
+    }
+
+    const timeIntervals = [firstTimeInterval, secondTimeInterval];
+    timeIntervals.forEach((timeInterval) => {
+        let currTimeDate = new Date(`Jan 1, 2000 ${timeInterval.start}`);
+        const stopTimeDate = new Date(`Jan 1, 2000 ${timeInterval.end}`);
+
+        let currTime = currTimeDate.getHours();
+        const stopTime = stopTimeDate.getHours();
+
+        while (currTime < stopTime) {
+            const currTimeMin = currTimeDate.getMinutes();
+
+            const displayName = convertTo12HourString(currTime, currTimeMin);
+            const internalName = `${currTime}:${currTimeMin < 10 ? `0${currTimeMin}` : currTimeMin}:00`;
+
+            if (!employer.unavailableTimes.includes(internalName)) {
+                if (timeOption == internalName || timeOption == 'All Times')
+                {
+                    tableTr = document.createElement('tr');
+                    const tableTd = document.createElement('td');
+            
+                    tableTd.textContent = displayName;
+                    tableTd.setAttribute('colspan', '2');
+            
+                    tableTr.appendChild(tableTd);
+                    companyTable.appendChild(tableTr);
+        
+                    tableTd.onclick = function(e) {
+                        tableTd.classList.toggle('selected');
+                    }
+                }
+            }
+
+            currTimeDate = new Date(currTimeDate.getTime() + interval * 60000);
+            currTime = currTimeDate.getHours();
+        }
+    });
+
+    // Only generate the table if there are available timeslots
+    if (companyTable.children.length > 0)
+    {
+        container.appendChild(companyTable);
+    }
+};
+
+/**
+ * Display employer timeslot tables.
+ * @param majorOption The major to filter by.
+ * @param timeOption The time to filter by.
+ */
+const displayEmployers = async function (majorOption: string, timeOption: string) {
+    const employersTimeslots = document.querySelector('.timeslots .employers') as HTMLDivElement;
+    const employersInfo = new EmployersInfo();
+    const eventInfo = new EventInfo();
+
+    try {
+        await employersInfo.initData();
+        await eventInfo.initData();
+    } catch {
+        displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
+    }
+
+    employersInfo.employers.forEach((employer) => {
+        if (employer.majors.includes(majorOption) || majorOption == 'All Majors') {
+            generateEmployerTimeslots(employersTimeslots, employer, eventInfo.lunchStartTime, eventInfo.lunchEndTime, eventInfo.reviewInterval, timeOption);
+        }
+    });
+};
+
+/** 
+ * Display timeslots with the filters when clicking the filter button.
+*/
+export const filterAction = function() {
+    const filterButton = document.querySelector('.intro #filter-button') as HTMLButtonElement;
+
+    filterButton.onclick = (() => {
+        const majorSelectElement = document.querySelector('form #major-select select') as HTMLSelectElement;
+        let majorOption = majorSelectElement.options[majorSelectElement.selectedIndex].value;
+        const timeSelectElement = document.querySelector('form #time-select select') as HTMLSelectElement;
+        let timeOption = timeSelectElement.options[timeSelectElement.selectedIndex].value;
+        const timeslotPage = document.querySelector('.timeslots') as HTMLDivElement;
+    
+        if (!majorOption) {
+            majorOption = 'All Majors';
+        }
+    
+        if (!timeOption) {
+            timeOption = 'All Times';
+        }
+    
+        // TODO: Add clearTimeslots() function
+        displayEmployers(majorOption, timeOption);
+
+        timeslotPage.style.display = 'block';
+        timeslotPage.scrollIntoView({behavior: 'smooth', block: 'start'});
+    });
 };
