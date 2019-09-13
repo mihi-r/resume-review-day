@@ -92,7 +92,7 @@ if ($rep_name === '' || $company === '') {
 // Check resume file
 $resume_check_result = checkFile($resume, RESUME_MAX_FILE_SIZE, $resume_mime_types);
 if (!$resume_check_result->file_safe) {
-    $result_data->data = $resume_check_result->data;
+    $result_data->data = $resume_check_result->message;
     echo json_encode($result_data);
     die();
 }
