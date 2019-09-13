@@ -25,7 +25,7 @@ if ($result) {
         $employer_info->majors = explode(', ', $row['majors']);
         $employer_info->unavailable_times = [];
 
-        $student_sql = 'SELECT id, time FROM resume_review_students WHERE company_id=' . $row['id'];
+        $student_sql = 'SELECT time, company_id FROM resume_review_students WHERE company_id=' . $row['id'];
         $student_result = $mysqli->query($student_sql);
 
         // Check for times that are already reserved

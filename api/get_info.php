@@ -17,6 +17,7 @@ $result_data->data->event_lunch_start_time = "";
 $result_data->data->event_lunch_end_time = "";
 $result_data->data->event_location = "";
 $result_data->data->review_interval_minutes = "";
+$result_data->data->student_review_max = "";
 $result_data->data->admin_email = "";
 $result_data->data->employers_deadline = "";
 $result_data->data->students_deadline = "";
@@ -24,7 +25,7 @@ $result_data->data->employers_open = "";
 $result_data->data->students_open = "";
 
 $sql = 'SELECT id, event_date, event_start_time, event_end_time, event_lunch_start_time, event_lunch_end_time,
-        event_location, review_interval_minutes, admin_email, employers_deadline, students_deadline, 
+        event_location, student_review_max, review_interval_minutes, admin_email, employers_deadline, students_deadline, 
         employers_open, students_open FROM resume_review_info ORDER BY id DESC LIMIT 1';
 
 $result = $mysqli->query($sql);
@@ -38,6 +39,7 @@ if ($result) {
         $result_data->data->event_lunch_end_time = $row['event_lunch_end_time'];
         $result_data->data->event_location = $row['event_location'];
         $result_data->data->review_interval_minutes = $row['review_interval_minutes'];
+        $result_data->data->student_review_max = $row['student_review_max'];
         $result_data->data->admin_email = $row['admin_email'];
         $result_data->data->employers_deadline = date('l, F jS, Y', strtotime($row['employers_deadline']));
         $result_data->data->students_deadline = date('l, F jS, Y', strtotime($row['students_deadline']));

@@ -7,6 +7,7 @@ interface EventInfo {
     ​​​event_lunch_start_time: string;
     event_location: string;
     review_interval_minutes: string;
+    student_review_max: string;
     employers_deadline: string;
     students_deadline: string;
     employers_open: string;
