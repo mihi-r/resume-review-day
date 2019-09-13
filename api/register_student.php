@@ -67,6 +67,28 @@ if (!$students_open) {
     die();
 }
 
+// Get representative name and company
+$rep_name = '';
+$company = '';
+
+$sql = 'SELECT name, company FROM resume_review_employers WHERE id=' . $company_id;
+$result = $mysqli->query($sql);
+
+if ($result) {
+	while ($row = $result->fetch_assoc()) {
+        $rep_name = $row['name'];
+        $company = $row['company'];
+    }
+    $result->close();
+}
+
+if ($rep_name === '' || $company === '') {
+    $result_data->data = 'Error occurred while retrieving employer information. Please try again. '
+        . 'If the error persists, contact the email on the bottom.';
+    echo json_encode($result_data);
+    die();
+}
+
 // Check resume file
 $resume_check_result = checkFile($resume, RESUME_MAX_FILE_SIZE, $resume_mime_types);
 if (!$resume_check_result->file_safe) {
@@ -187,8 +209,28 @@ if (!move_uploaded_file($resume['tmp_name'], $unique_filename)) {
     die();
 };
 
-$result_data->status = 'success';
-echo json_encode($result_data);
+// Email user
+$email_subject = "University of Cincinnati Technical Resume Review Day Registration Confirmation";
+
+$email_msg = "Hello " . $name . ", \n \n";
+$email_msg .= "Thank you for creating a registration for the University of Cincinnati Technical Resume Review Day. ";
+$email_msg .= "The event will take place on " . date("l, F jS, Y", strtotime($event_date)) . " in " . $event_location . ". The dress attire is business casual.";
+$email_msg .= "Please come to the lobby 5 minutes before your scheduled time to sign in and CEAS Tribunal representives while guide you from there. Most importantly, you are required to bring a copy of your resume to the event. \n \n";
+$email_msg .= "During your resume review, you are scheduled to meet with representive " . $rep_name . " from " . $company . " at " . date("g:i a", strtotime($time)) . ". \n \n";
+$email_msg .= "If you would like to make any changes to the information you have submitted, please reply to this email. Alternatively, you can email " . $admin_email . ". \n \n";
+$email_msg .= "We look forward to seeing you at the event! \n \n";
+$email_msg .= "Thank you, \n";
+$email_msg .= "CEAS Tribunal";
+
+$email_headers = "From: " . $admin_email;
+
+if (mail($email, $email_subject, $email_msg, $email_headers)) {
+    $result_data->status = 'success';
+    echo json_encode($result_data);
+} else {
+    $result_data->data = 'Error occurred while sending the confirmation email. Please contact the email in the description notifying of this error. Do not resumbit the form.';
+    echo json_encode($result_data);
+}
 
 mysqli_close($mysqli);
 ?>

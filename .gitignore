@@ -1,4 +1,5 @@
 node_modules
 build
 .DS_Store
-api/includes
+api/includes/mysqli.php
+resumes
