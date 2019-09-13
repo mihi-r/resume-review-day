@@ -98,7 +98,7 @@ $result = $mysqli->query($sql);
 
 if (!$result) {
     $result_data->data = 'Error occurred while sending your reservation. Please try again. '
-    . 'If the error persists, contact the email on the bottom..';
+    . 'If the error persists, contact the email on the bottom.';
     echo json_encode($result_data);
     die();
 }

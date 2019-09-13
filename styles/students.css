@@ -104,3 +104,15 @@
 .register {
   display: none;
 }
+
+/* Event Closed */
+
+.event-closed {
+  display: none;
+}
+
+/* Registration Confirm */
+
+.registered {
+  display: none;
+}

@@ -24,7 +24,7 @@
                     
                     Resume Review Day takes place on <span class="event-date"></span> in <span class="location"></span>. <br><br>
 
-                    Select a timeslot with an employer by browsing all of the available options or filter by major and a desired time. You are able to register for up to two different employers. The last day to sign up will be on <span class="deadline"></span>. <br><br>
+                    Select a timeslot with an employer by browsing all of the available options or filter by major and a desired time. You are able to register for up to <span class="review-max"></span> different employer(s). The last day to sign up will be on <span class="deadline"></span>. <br><br>
 
                     If you have any questions, please contact us at <a class="admin-email"></a>.
                 </p>
@@ -46,6 +46,19 @@
     
                 <input type="button" value="Filter" id="filter-button">
             </form>
+        </div>
+
+        <div class="container event-closed">
+            <div class="detail-box">
+                <p>The registration is currently closed. Return soon for the next Resume Review Day!</p>
+            </div>
+        </div>
+
+        <div class="container registered">
+            <div class="detail-box">
+                <p class="success-emoji">🎉</p>
+                <p>We have sent you an email to <a class="email"></a> confirming your reservation.</p>
+            </div>
         </div>
     </div>
 
@@ -88,7 +101,7 @@
                 </label>
 
                 <input type="button" value="Register" id="register-button">
-                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
             </form>
         </div>
     </div>

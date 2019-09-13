@@ -1,4 +1,4 @@
-import { generateCheckboxes, displayWarning, validateInputFieldData, validateSelectFieldData, generateTimeSelectOptions } from './common/uiElements';
+import { generateCheckboxes, displayWarning, validateInputFieldData, validateSelectFieldData, generateTimeSelectOptions, phoneNumberFormater } from './common/uiElements';
 import { Majors } from './models/majors';
 import { EventInfo } from './models/eventInfo';
 import { EmployerRegistration } from './models/employerRegistration';
@@ -104,18 +104,11 @@ export const generateTimeSelect = async function () {
 };
 
 /**
- * Adds '-' for the phone number input.
+ * Adds '-' for the employer phone number input.
  */
-export const phoneNumberFormater = function () {
+export const employerPhoneNumberFormater = function () {
     const phoneNumberInput = document.querySelector('.intro #phone') as HTMLInputElement;
-
-    phoneNumberInput.onkeyup = ((event) => {
-        if ((phoneNumberInput.value.length === 3 || phoneNumberInput.value.length === 7)
-        && phoneNumberInput.value !== ''
-        && event.key !== 'Backspace') {
-          phoneNumberInput.value += '-';
-        }
-    });
+    phoneNumberFormater(phoneNumberInput);
 };
 
 /** 

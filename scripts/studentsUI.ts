@@ -1,10 +1,12 @@
 import { EventInfo } from './models/eventInfo';
 import { Majors } from './models/majors';
-import { displayWarning, generateSelectOption, generateTimeSelectOptions } from './common/uiElements';
+import { displayWarning, generateSelectOption, generateTimeSelectOptions, validateInputFieldData, validateSelectFieldData, validateFileFieldData } from './common/uiElements';
 import { EmployersInfo } from './models/employersInfo';
+import { StudentRegistration } from './models/studentRegistration';
 import { Employer, TimeInterval } from './types/types';
 import { convertTo12HourString } from './common/utils';
 import { GradYears } from './models/gradYears';
+import { FileConstants } from './constants/fileConstants';
 
 /** 
  * Update the description with the most recent event information.
@@ -21,6 +23,7 @@ export const updateDescription = async function () {
     const eventReviewInterval = document.querySelector('.intro-info .review-interval') as HTMLSpanElement;
     const eventDate = document.querySelector('.intro-info .event-date') as HTMLSpanElement;
     const location = document.querySelector('.intro-info .location') as HTMLSpanElement;
+    const reviewMax = document.querySelector('.intro-info .review-max') as HTMLSpanElement;
     const deadline = document.querySelector('.intro-info .deadline') as HTMLSpanElement;
     const adminEmail = document.querySelector('.intro-info .admin-email') as HTMLAnchorElement;
 
@@ -29,6 +32,8 @@ export const updateDescription = async function () {
     eventDate.textContent = eventInfo.date;
 
     location.textContent = eventInfo.location;
+
+    reviewMax.textContent = `${eventInfo.studentReviewMax}`;
 
     deadline.textContent = eventInfo.studentsDeadline;
 
@@ -74,12 +79,70 @@ export const generateTimeSelect = async function () {
     generateTimeSelectOptions(timeSelectElement, eventInfo.startTime, eventInfo.endTime, eventInfo.reviewInterval);
 };
 
+/** 
+ * Register the student after clicking the register button.
+*/
+const registerAction = function(companyId: string, time: string) {
+    const registerButton = document.querySelector('.register #register-button') as HTMLButtonElement;
+    const formLoader = document.querySelector('.register .loader') as HTMLDivElement;
+
+    registerButton.onclick = (async () => {
+        const name = document.querySelector('.register #name') as HTMLInputElement;
+        const email = document.querySelector('.register #email') as HTMLInputElement;
+        const resume = document.querySelector('.register #resume-file') as HTMLInputElement;
+    
+        const majorSelect = document.querySelector('.register #student-major-select select') as HTMLSelectElement;
+        const major = majorSelect.options[majorSelect.selectedIndex];
+        const yearSelect = document.querySelector('.register #year-select select') as HTMLSelectElement;
+        const year = yearSelect.options[yearSelect.selectedIndex];
+
+        if(!validateInputFieldData(name, email) && !validateSelectFieldData(majorSelect, yearSelect) && !validateFileFieldData(resume)) {
+            registerButton.style.display = 'none';
+            formLoader.style.display = 'block';
+
+            if (resume.files !== null) {
+                const fileSizeLimit = FileConstants.FILE_SIZE_LIMIT_MB * 1024 * 1024;
+                if (resume.files[0].size < fileSizeLimit) {
+                    const studentRegistration = new StudentRegistration(name.value, email.value, companyId, time, year.value, major.value, resume.files[0])
+                    try {
+                        await studentRegistration.sendData();
+        
+                        const registeredBox = document.querySelector('.intro .registered') as HTMLDivElement;
+                        const emailSpan = document.querySelector('.intro .registered .email') as HTMLAnchorElement;
+                        const filterForm = document.querySelector('.intro .filter-form') as HTMLDivElement;
+                        const registrationForm = document.querySelector('.register') as HTMLDivElement;
+                        const timeslots = document.querySelector('.timeslots') as HTMLDivElement;
+        
+                        filterForm.style.display = 'none';
+                        registrationForm.style.display = 'none';
+                        timeslots.style.display = 'none';
+                        registeredBox.style.display = 'block';
+        
+                        emailSpan.textContent = email.value;
+                        emailSpan.setAttribute('href', `mailto:${email.value}`);
+                    } catch (e) {
+                        displayWarning(e);
+                    }
+                } else {
+                    displayWarning('Please choose a resume under 2MB.');
+                }
+            }
+
+            registerButton.style.display = 'block';
+            formLoader.style.display = 'none';
+        } else {
+            displayWarning('Please complete the form before signing up.')
+        }
+    });
+};
+
 /**
  * Generate the form to register for a timeslot.
  * @param employer The employer information to display.
- * @param selectedTime The chosen timeslot.
+ * @param selectedDisplayTime The display time for the chosen timeslot.
+ * @param selectedInternalTime The internal time for the chosen timeslot.
  */
-const generateRegisterFrom = async function (employer: Employer, selectedTime: string) {
+const generateRegisterFrom = async function (employer: Employer, selectedDisplayTime: string, selectedInternalTime: string) {
     const eventInfo = new EventInfo();
     
     try {
@@ -102,7 +165,7 @@ const generateRegisterFrom = async function (employer: Employer, selectedTime: s
     const resumeUploadText = document.querySelector('.register .file-text span') as HTMLSpanElement;
 
     companyNameSpan.textContent = employer.company;
-    companyTimeSpan.textContent = selectedTime;
+    companyTimeSpan.textContent = selectedDisplayTime;
     reviewInterval.textContent = String(eventInfo.reviewInterval);
 
     // Only generate majors if it hasn't been generated before
@@ -139,6 +202,8 @@ const generateRegisterFrom = async function (employer: Employer, selectedTime: s
             resumeUploadText.textContent = fileName;
         }
     };
+
+    registerAction(employer.companyId, selectedInternalTime);
 }
 
 /**
@@ -232,7 +297,7 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
             const currTimeMin = currTimeDate.getMinutes();
 
             const displayName = convertTo12HourString(currTime, currTimeMin);
-            const internalName = `${currTime}:${currTimeMin < 10 ? `0${currTimeMin}` : currTimeMin}:00`;
+            const internalName = `${currTime < 10 ? `0${currTime}` : currTime}:${currTimeMin < 10 ? `0${currTimeMin}` : currTimeMin}:00`;
 
             if (!employer.unavailableTimes.includes(internalName)) {
                 if (timeOption == internalName || timeOption == 'All Times')
@@ -253,7 +318,7 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
                         }
                         
                         tableTd.classList.toggle('selected');
-                        generateRegisterFrom(employer, displayName);
+                        generateRegisterFrom(employer, displayName, internalName);
                     }
                 }
             }

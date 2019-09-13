@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Sep 13, 2019 at 05:51 AM
+-- Generation Time: Sep 13, 2019 at 05:50 AM
 -- Server version: 5.6.38
 -- PHP Version: 7.2.1
 
@@ -23,42 +23,29 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `resume_review_employers`
+-- Table structure for table `resume_review_students`
 --
 
-CREATE TABLE `resume_review_employers` (
-  `id` int(6) UNSIGNED NOT NULL,
+CREATE TABLE `resume_review_students` (
   `name` varchar(256) NOT NULL,
-  `company` varchar(256) NOT NULL,
   `email` varchar(256) NOT NULL,
-  `phone` varchar(12) NOT NULL,
-  `diet` tinytext NOT NULL,
-  `start` time NOT NULL,
-  `end` time NOT NULL,
-  `alumnus` varchar(3) NOT NULL,
-  `majors` text NOT NULL,
+  `major` varchar(256) NOT NULL,
+  `year` year(4) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `time` time NOT NULL,
+  `resume` text NOT NULL,
   `sign_up_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `resume_review_employers`
+-- Indexes for table `resume_review_students`
 --
-ALTER TABLE `resume_review_employers`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `resume_review_employers`
---
-ALTER TABLE `resume_review_employers`
-  MODIFY `id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `resume_review_students`
+  ADD PRIMARY KEY (`company_id`,`time`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
