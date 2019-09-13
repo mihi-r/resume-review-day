@@ -192,6 +192,7 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
     tableTr.appendChild(companyInfoTd);
     companyTable.appendChild(tableTr);
 
+    // Expand information on click
     companyInfoIconTh.onclick = (() => {
         if (companyInfoTd.style.display == 'table-cell') {
             companyInfoTd.style.transform = 'scaleY(0)';
@@ -218,6 +219,7 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
         end: employer.end
     }
 
+    // Add times
     const timeIntervals = [firstTimeInterval, secondTimeInterval];
     timeIntervals.forEach((timeInterval) => {
         let currTimeDate = new Date(`Jan 1, 2000 ${timeInterval.start}`);
@@ -262,7 +264,7 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
     });
 
     // Only generate the table if there are available timeslots
-    if (companyTable.children.length > 0)
+    if (companyTable.children.length > 2)
     {
         container.appendChild(companyTable);
     }
@@ -285,11 +287,23 @@ const displayEmployers = async function (majorOption: string, timeOption: string
         displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
     }
 
+    // Remove already existing timeslots before generating new ones
+    while (employersTimeslots.firstChild) {
+        employersTimeslots.firstChild.remove();
+    }
+
     employersInfo.employers.forEach((employer) => {
         if (employer.majors.includes(majorOption) || majorOption == 'All Majors') {
             generateEmployerTimeslots(employersTimeslots, employer, eventInfo.lunchStartTime, eventInfo.lunchEndTime, eventInfo.reviewInterval, timeOption);
         }
     });
+
+    if (employersTimeslots.children.length === 0) {
+        const notFoundMessage = document.createElement('p');
+        notFoundMessage.setAttribute('class', 'not-found-message');
+        notFoundMessage.textContent = 'Unfortunately, no available timeslots could be found with your desired filters.';
+        employersTimeslots.appendChild(notFoundMessage);
+    }
 };
 
 /** 
