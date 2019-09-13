@@ -392,7 +392,6 @@ export const filterAction = function() {
             timeOption = 'All Times';
         }
     
-        // TODO: Add clearTimeslots() function
         displayEmployers(majorOption, timeOption);
 
         timeslotPage.style.display = 'block';
