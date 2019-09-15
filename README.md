@@ -1,17 +1,21 @@
 # Resume Review Day
-Resume Review Day is an event hosted by the [Engineering and Applied Science Tribunal](https://tribunal.uc.edu) in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for 20 minute intervals to receive resume feedback from industry leaders and gives students the ability to network with employers before the Technical Career Fair. It is also used as a chance for employers to build student relations, as well as get face-to-face time with additional students that might be seeking a co-op at no cost to them. 
+Resume Review Day is an event hosted by the [College of Engineering and Applied Science Tribunal](https://tribunal.uc.edu) in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for 20 minute intervals to receive resume feedback from industry leaders and gives students the ability to network with employers before the Technical Career Fair. It is also used as a chance for employers to build student relations, as well as get face-to-face time with additional students that might be seeking a co-op at no cost to them. 
 
-The website has two components. One is the employer registration page where employers can register a spot for this event. The second component allows students to sign up for resume reviews from an employer and time of their choice.
+The website has two components. One is the employer registration page where employers can register a spot for this event. The second component allows students to sign up for resume reviews with an employer and time of their choice.
 
 # Tools and Languages
 Resume Review Day is written in TypeScript (ES2018) and HTML/CSS for the client-side with REST API calls to the PHP server-side. Gulp and Browserify are used to compile TypeScript into a JavaScript format that the browser will expect. 
 
-## Getting Started
-### Initial Set Up
+# Demo
+A short demo of the student registration page is shown below.
+![Resume Review Day student registration demo](/assets/demo.gif)
+
+# Getting Started
+## Initial Set Up
 Prerequisites:
-- Mamp (or something equivalent)
-- VS Code (or something equivalent)
-- nodeJS for NPM
+- [Mamp](https://www.mamp.info/en/) (or something equivalent)
+- [VS Code](https://code.visualstudio.com) (or something equivalent)
+- [Node.js for NPM](https://nodejs.org/en/)
 
 1. `cd` into the MAMP folder.
 2. Rename your current htdocs folder to something else using `mv htdocs <new directory name>`.
@@ -55,7 +59,7 @@ For production, you will need to provide the missing constants and update the da
 15. Open up the htdocs directory in VS Code to start developing.
 16. To see the webpage, click on "Open WebStart page" from the MAMP Server and click on "My Website".
 
-### Making changes
+## Making changes
 1. Run `gulp watch`.
 2. Make your desired change.
 3. Visit the webpage and clear browser cache (<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>r</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>r</kbd>).
