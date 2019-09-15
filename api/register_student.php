@@ -14,6 +14,7 @@ $year = '';
 $company_id = null;
 $time = '';
 $major = '';
+$resume = null;
 
 $name = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['nameText'])));
 $email = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['emailText'])));
@@ -21,7 +22,9 @@ $year = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['yearText'])))
 $company_id = (int)mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['companyIdText'])));
 $time = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['timeText'])));
 $major = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['majorText'])));
-$resume = $_FILES['resumeFile'];
+if (isset($_FILES['resumeFile'])) {
+    $resume = $_FILES['resumeFile'];
+}
 
 $resume_mime_types = array(
     'pdf' => 'application/pdf'
@@ -89,12 +92,14 @@ if ($rep_name === '' || $company === '') {
     die();
 }
 
-// Check resume file
-$resume_check_result = checkFile($resume, RESUME_MAX_FILE_SIZE, $resume_mime_types);
-if (!$resume_check_result->file_safe) {
-    $result_data->data = $resume_check_result->message;
-    echo json_encode($result_data);
-    die();
+if ($resume) {
+    // Check resume file
+    $resume_check_result = checkFile($resume, RESUME_MAX_FILE_SIZE, $resume_mime_types);
+    if (!$resume_check_result->file_safe) {
+        $result_data->data = $resume_check_result->message;
+        echo json_encode($result_data);
+        die();
+    }
 }
 
 // Check name
@@ -171,15 +176,19 @@ if ($result) {
     die();
 }
 
-// Make resume dir
-if (!is_dir(RESUME_FILE_DIR)) {
-    mkdir(RESUME_FILE_DIR, 0755, true);
-}
+$unique_filename = '';
 
-// Generate unique filename
-$unique_filename = tempnam(RESUME_FILE_DIR, '');
-unlink($unique_filename);
-$unique_filename .= '.pdf';
+if ($resume) {
+    // Make resume dir
+    if (!is_dir(RESUME_FILE_DIR)) {
+        mkdir(RESUME_FILE_DIR, 0775, true);
+    }
+
+    // Generate unique filename
+    $unique_filename = tempnam(RESUME_FILE_DIR, '');
+    unlink($unique_filename);
+    $unique_filename .= '.pdf';
+}
 
 // Update student table
 $sql = "INSERT IGNORE INTO resume_review_students (name, company_id, email, time, year, major, resume)
@@ -201,22 +210,24 @@ if ($num_of_affected_rows === 0) {
     die();
 }
 
-// Add file to server
-if (!move_uploaded_file($resume['tmp_name'], $unique_filename)) {
+if ($resume) {
+    // Add file to server
+    if (!move_uploaded_file($resume['tmp_name'], $unique_filename)) {
 
-    $result_data->data = 'Resume file upload error. Try registering again. If the problem persists, select a different resume file.';
-    echo json_encode($result_data);
-    die();
-};
+        $result_data->data = 'Resume file upload error. Try registering again. If the problem persists, select a different resume file.';
+        echo json_encode($result_data);
+        die();
+    };
+}
 
 // Email user
 $email_subject = "University of Cincinnati Technical Resume Review Day Registration Confirmation";
 
 $email_msg = "Hello " . $name . ", \n \n";
 $email_msg .= "Thank you for creating a registration for the University of Cincinnati Technical Resume Review Day. ";
-$email_msg .= "The event will take place on " . date("l, F jS, Y", strtotime($event_date)) . " in " . $event_location . ". The dress attire is business casual.";
-$email_msg .= "Please come to the lobby 5 minutes before your scheduled time to sign in and CEAS Tribunal representives while guide you from there. Most importantly, you are required to bring a copy of your resume to the event. \n \n";
-$email_msg .= "During your resume review, you are scheduled to meet with representive " . $rep_name . " from " . $company . " at " . date("g:i a", strtotime($time)) . ". \n \n";
+$email_msg .= "The event will take place on " . date("l, F jS, Y", strtotime($event_date)) . " in " . $event_location . ". The dress attire is business casual. ";
+$email_msg .= "Please come to the lobby 5 minutes before your scheduled time to sign in and CEAS Tribunal representatives while guide you from there. Most importantly, you are required to bring a copy of your resume to the event. \n \n";
+$email_msg .= "During your resume review, you are scheduled to meet with representative " . $rep_name . " from " . $company . " at " . date("g:i a", strtotime($time)) . ". \n \n";
 $email_msg .= "If you would like to make any changes to the information you have submitted, please reply to this email. Alternatively, you can email " . $admin_email . ". \n \n";
 $email_msg .= "We look forward to seeing you at the event! \n \n";
 $email_msg .= "Thank you, \n";
