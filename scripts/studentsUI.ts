@@ -1,6 +1,6 @@
 import { EventInfo } from './models/eventInfo';
 import { Majors } from './models/majors';
-import { displayWarning, generateSelectOption, generateTimeSelectOptions, validateInputFieldData, validateSelectFieldData, validateFileFieldData } from './common/uiElements';
+import { displayWarning, generateSelectOption, generateTimeSelectOptions, validateInputFieldData, validateSelectFieldData } from './common/uiElements';
 import { EmployersInfo } from './models/employersInfo';
 import { StudentRegistration } from './models/studentRegistration';
 import { Employer, TimeInterval } from './types/types';
@@ -39,6 +39,15 @@ export const updateDescription = async function () {
 
     adminEmail.textContent = eventInfo.adminEmail;
     adminEmail.setAttribute('href', `mailto:${eventInfo.adminEmail}`);
+
+    // Check to see if form will be open
+    if (!eventInfo.studentsOpen) {
+        const filterForm = document.querySelector('.intro .filter-form') as HTMLDivElement;
+        const eventClosed = document.querySelector('.intro .event-closed') as HTMLDivElement;
+
+        filterForm.style.display = 'none';
+        eventClosed.style.display = 'block';
+    }
 };
 
 /** 
@@ -83,6 +92,8 @@ export const generateTimeSelect = async function () {
  * Register the student after clicking the register button.
 */
 const registerAction = function(companyId: string, time: string) {
+    const fileSizeLimit = FileConstants.FILE_SIZE_LIMIT_MB * 1024 * 1024;
+
     const registerButton = document.querySelector('.register #register-button') as HTMLButtonElement;
     const formLoader = document.querySelector('.register .loader') as HTMLDivElement;
 
@@ -96,14 +107,21 @@ const registerAction = function(companyId: string, time: string) {
         const yearSelect = document.querySelector('.register #year-select select') as HTMLSelectElement;
         const year = yearSelect.options[yearSelect.selectedIndex];
 
-        if(!validateInputFieldData(name, email) && !validateSelectFieldData(majorSelect, yearSelect) && !validateFileFieldData(resume)) {
+        if(!validateInputFieldData(name, email) && !validateSelectFieldData(majorSelect, yearSelect)) {
             registerButton.style.display = 'none';
             formLoader.style.display = 'block';
 
             if (resume.files !== null) {
-                const fileSizeLimit = FileConstants.FILE_SIZE_LIMIT_MB * 1024 * 1024;
-                if (resume.files[0].size < fileSizeLimit) {
-                    const studentRegistration = new StudentRegistration(name.value, email.value, companyId, time, year.value, major.value, resume.files[0])
+                if (resume.files[0] && resume.files[0].size > fileSizeLimit) {
+                    displayWarning('Please choose a resume under 2MB.');
+                } else {
+                    let studentRegistration;
+                    if (resume.files[0]) {
+                        studentRegistration = new StudentRegistration(name.value, email.value, companyId, time, year.value, major.value, resume.files[0])
+                    } else {
+                        studentRegistration = new StudentRegistration(name.value, email.value, companyId, time, year.value, major.value)
+                    }
+
                     try {
                         await studentRegistration.sendData();
         
@@ -123,8 +141,6 @@ const registerAction = function(companyId: string, time: string) {
                     } catch (e) {
                         displayWarning(e);
                     }
-                } else {
-                    displayWarning('Please choose a resume under 2MB.');
                 }
             }
 
@@ -204,7 +220,7 @@ const generateRegisterFrom = async function (employer: Employer, selectedDisplay
     };
 
     registerAction(employer.companyId, selectedInternalTime);
-}
+};
 
 /**
  * Generate a timeslot table for an employer. Timeslots will not be generated for the lunch break.
@@ -241,17 +257,17 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
     // Create company info cell
     tableTr = document.createElement('tr');
     const companyInfoTd = document.createElement('td');
-    const representivePara = document.createElement('p');
+    const representativePara = document.createElement('p');
     const majorsPara = document.createElement('p');
     const divider = document.createElement('hr');
 
-    representivePara.textContent = `Representive: ${employer.name}`;
+    representativePara.textContent = `Representative: ${employer.name}`;
     majorsPara.textContent = `Majors: ${employer.majors.join(', ')}`;
 
     companyInfoTd.setAttribute('colspan', '2');
     companyInfoTd.setAttribute('class', 'company-info');
 
-    companyInfoTd.appendChild(representivePara);
+    companyInfoTd.appendChild(representativePara);
     companyInfoTd.appendChild(divider);
     companyInfoTd.appendChild(majorsPara);
     tableTr.appendChild(companyInfoTd);
@@ -298,7 +314,6 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
 
             const displayName = convertTo12HourString(currTime, currTimeMin);
             const internalName = `${currTime < 10 ? `0${currTime}` : currTime}:${currTimeMin < 10 ? `0${currTimeMin}` : currTimeMin}:00`;
-
             if (!employer.unavailableTimes.includes(internalName)) {
                 if (timeOption == internalName || timeOption == 'All Times')
                 {

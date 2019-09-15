@@ -8,7 +8,7 @@ export class StudentRegistration {
     public time: string;
     public year: string;
     public major: string;
-    public resume: File;
+    public resume: File | undefined;
 
     /**
      * The constructor.
@@ -22,7 +22,7 @@ export class StudentRegistration {
      */
     constructor(
         name: string, email: string, companyId: string, time: string,
-        year: string, major: string, resume: File
+        year: string, major: string, resume?: File
     ) {
         this.name = name;
         this.email = email;
@@ -44,7 +44,9 @@ export class StudentRegistration {
         submissionFormData.append('companyIdText', this.companyId);
         submissionFormData.append('timeText', this.time);
         submissionFormData.append('majorText', this.major);
-        submissionFormData.append('resumeFile', this.resume);
+        if (this.resume) {
+            submissionFormData.append('resumeFile', this.resume);
+        }
 
         const response = await fetch('../api/register_student.php', {
             method: 'POST',

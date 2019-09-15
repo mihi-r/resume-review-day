@@ -62,7 +62,7 @@ export const generateTimeSelectOptions = function (
         const currTimeMin = currTimeDate.getMinutes();
 
         const displayName = convertTo12HourString(currTime, currTimeMin);
-        const internalName = `${currTime}:${currTimeMin < 10 ? `0${currTimeMin}` : currTimeMin}:00`;
+        const internalName = `${currTime < 10 ? `0${currTime}` : currTime}:${currTimeMin < 10 ? `0${currTimeMin}` : currTimeMin}:00`;
 
         generateSelectOption(selectElement, displayName, internalName);
 
@@ -74,7 +74,7 @@ export const generateTimeSelectOptions = function (
         const currTimeMin = currTimeDate.getMinutes();
 
         const displayName = convertTo12HourString(currTime, currTimeMin);
-        const internalName = `${currTime}:${currTimeMin < 10 ? `0${currTimeMin}` : currTimeMin}:00`;
+        const internalName = `${currTime < 10 ? `0${currTime}` : currTime}:${currTimeMin < 10 ? `0${currTimeMin}` : currTimeMin}:00`;
 
         generateSelectOption(selectElement, displayName, internalName);
     }
