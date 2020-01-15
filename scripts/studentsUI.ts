@@ -290,26 +290,65 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
         }
     })
 
-    const firstTimeInterval: TimeInterval = {
-        start: employer.start,
-        end: lunchStart
-    }
+    const employerStartDate = new Date(`Jan 1, 2000 ${employer.start}`);
+    const employerEndDate = new Date(`Jan 1, 2000 ${employer.end}`);
+    const lunchStartDate = new Date(`Jan 1, 2000 ${lunchStart}`);
+    const lunchEndDate = new Date(`Jan 1, 2000 ${lunchEnd}`);
 
-    const secondTimeInterval: TimeInterval = {
-        start: lunchEnd,
-        end: employer.end
+    const timeIntervals: Array<TimeInterval> = []
+
+    // If employer is only scheduled before lunch
+    if (employerStartDate < lunchStartDate && employerEndDate <= lunchEndDate) {
+        let firstTimeInterval: TimeInterval = {
+            start: employerStartDate,
+            end: employerEndDate
+        }
+
+        // Not allowing students to select a timeslot during lunch
+        if (employerEndDate > lunchStartDate) {
+            firstTimeInterval.end = lunchStartDate;
+        }
+
+        timeIntervals.push(firstTimeInterval);
+    }
+    // If employer is only scheduled after lunch
+    else if (employerStartDate >= lunchStartDate) {
+        let firstTimeInterval: TimeInterval = {
+            start: employerStartDate,
+            end: employerEndDate
+        }
+
+        // Not allowing students to select a timeslot during lunch
+        if (employerStartDate < lunchEndDate) {
+            firstTimeInterval.start = lunchEndDate;
+        }
+
+        timeIntervals.push(firstTimeInterval);
+    }
+    // If employer is scheduled before and after lunch
+    else {
+        const firstTimeInterval: TimeInterval = {
+            start: employerStartDate,
+            end: lunchStartDate
+        }
+    
+        const secondTimeInterval: TimeInterval = {
+            start: lunchEndDate,
+            end: employerEndDate
+        }
+
+        timeIntervals.push(firstTimeInterval);
+        timeIntervals.push(secondTimeInterval);
     }
 
     // Add times
-    const timeIntervals = [firstTimeInterval, secondTimeInterval];
     timeIntervals.forEach((timeInterval) => {
-        let currTimeDate = new Date(`Jan 1, 2000 ${timeInterval.start}`);
-        const stopTimeDate = new Date(`Jan 1, 2000 ${timeInterval.end}`);
+        let currTimeDate = timeInterval.start;
+        const stopTimeDate = timeInterval.end;
 
         let currTime = currTimeDate.getHours();
-        const stopTime = stopTimeDate.getHours();
 
-        while (currTime < stopTime) {
+        while (currTimeDate < stopTimeDate) {
             const currTimeMin = currTimeDate.getMinutes();
 
             const displayName = convertTo12HourString(currTime, currTimeMin);

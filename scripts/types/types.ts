@@ -35,8 +35,8 @@ export interface Employer {
 }
 
 export interface TimeInterval {
-    start: string;
-    end: string;
+    start: Date;
+    end: Date;
 }
 
 export interface APIResponse {
