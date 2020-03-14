@@ -20,7 +20,7 @@ Prerequisites:
 1. `cd` into the MAMP folder.
 2. Rename your current htdocs folder to something else using `mv htdocs <new directory name>`.
 3. `git clone https://github.com/mihi-r/ceas-tribunal-luau-tickets.git` and click enter to clone repo (alternatively, you can use the SSH clone if you have that set up).
-4. `mv ceas-tribunal-luau-tickets htdocs` to rename the cloned folder to “htdocs”.
+4. `mv resume-review-day htdocs` to rename the cloned folder to “htdocs”.
 5. `cd` into htdocs.
 6. Run `npm install` to install all of the needed modules for the project.
 7. Run `npm install gulp-cli -g` to install Gulp globally.
