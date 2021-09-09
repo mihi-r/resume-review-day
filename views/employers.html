@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair.">
+    <meta name="description" content="Resume Review Day is an event hosted by the College of Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair.">
     <title>Resume Review Day Employer Registration</title>
-    <link rel="stylesheet" type="text/css" href="../build/main.min.css">
-    <link rel="stylesheet" type="text/css" href="../build/employers.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css">
+    <link rel="stylesheet" type="text/css" href="../build/main.min.css?v=616f11e3b07402abaecc14bd67d9ce03">
+    <link rel="stylesheet" type="text/css" href="../build/employers.min.css?v=616f11e3b07402abaecc14bd67d9ce03">
+    <link rel="stylesheet" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css?v=616f11e3b07402abaecc14bd67d9ce03">
 </head>
 <body>
     <div class="intro">
@@ -20,11 +20,11 @@
                 <h1>Resume Review Day Employer Registration</h1>
             </div>
             <div class="intro-info">
-                <p>Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for <span class="review-interval"></span> minute intervals to receive resume feedback from industry leaders and gives students the ability to network with employers before the Technical Career Fair. <br><br>
+                <p>Resume Review Day is an event hosted by the College of Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for <span class="review-interval"></span> minute intervals to receive resume feedback from industry leaders and gives students the ability to network with employers before the Technical Career Fair. <br><br>
         
-                    It is also used as a chance for employers to build student relations, as well as get face-to-face time with additional students that might be seeking a co-op at no cost to them. The event will take place on <span class="event-date"></span> from <span class="event-time"></span> with breakfast in the morning and a lunch break from <span class="lunch-time"></span>. A parking pass voucher will also be provided. <br><br>
+                    It is also used as a chance for employers to build student relations, as well as get face-to-face time with additional students that might be seeking a co-op at no cost to them. The event will take place on <span class="event-date"></span> from <span class="event-time"></span> with a break at <span class="lunch-time"></span>. <br><br>
             
-                    Please provide the following information about yourself and your company. You are welcome to come for as many or as few hours as you like. If you are registering for someone else, please ensure that we have the information of the person who will be attending the event, as the specified email address and phone number will be used for all future contact regarding the Resume Review Day.
+                    Please provide the following information about yourself and your company. If you are registering for someone else, please ensure that we have the information of the person who will be attending the event, as the specified email address and phone number will be used for all future contact regarding the Resume Review Day.
                     
                     The last day to sign up will be on <span class="deadline"></span>. <br><br>
                     
@@ -32,41 +32,53 @@
                 </p>
             </div>
             <form>
-                <input type="text" id="name" name="name" placeholder="Full Name" autocomplete="off" aria-label="Name" required>
+                <h3>Select your preferred review method:</h3>
+                <div class="radio-select-container"></div>
 
-                <input type="text" id="company" name="company" placeholder="Company Name" autocomplete="off" aria-label="Company Name" required>
-                
-                <input type="email" id="email" name="email" placeholder="Email" autocomplete="off" aria-label="Email" required>
+                <div class="main-form-area">
+                    <input type="text" id="name" name="name" placeholder="Full Name" autocomplete="off" aria-label="Name" required>
 
-                <input type="text" id="phone" name="phone" placeholder="Phone Number (xxx-xxx-xxxx)" autocomplete="off" aria-label="Phone" required>
+                    <input type="text" id="company" name="company" placeholder="Company Name" autocomplete="off" aria-label="Company Name" required>
+                    
+                    <input type="email" id="email" name="email" placeholder="Email" autocomplete="off" aria-label="Email" required>
+    
+                    <input type="text" id="phone" name="phone" placeholder="Phone Number (xxx-xxx-xxxx)" autocomplete="off" aria-label="Phone" required>
+    
+                    <input type="text" id="dietary" name="dietary" placeholder="Dietary Restrictions (if applicable)" autocomplete="off" aria-label="Dietary Restrictions">
+                    
+                    <div class="time-select-container">
+                        <div class="select-container" id="start-time">
+                            <label for="start-time-select">Start Time:</label>
+                            <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
+                            <select id="start-time-select" autocomplete="off" required>
+                                <option value="" disabled="disabled" selected="selected">Select Time</option>
+                            </select>
+                        </div>
+        
+                        <div class="select-container" id="end-time">
+                            <label for="end-time-select">End Time:</label>
+                            <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
+                            <select id="end-time-select" autocomplete="off" required>
+                                <option value="" disabled="disabled" selected="selected">Select Time</option>
+                            </select>
+                        </div>
+                    </div>
 
-                <input type="text" id="dietary" name="dietary" placeholder="Dietary Restrictions (if applicable)" autocomplete="off" aria-label="Dietary Restrictions">
-                
-                <div class="select-container" id="start-time">
-                    <label for="start-time-select">Start Time:</label>
-                    <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
-                    <select id="start-time-select" autocomplete="off" required>
-                        <option value="" disabled="disabled" selected="selected">Select Time</option>
-                    </select>
+                    <div class="review-count-slider-container">
+                        <label for="review-count-slider">Maximum resumes to review: <span class='max-review-count'>20</span></label>
+                        <input type="range" min="1" max="20" value="20" class="slider" id="review-count-slider">
+                    </div>
+    
+                    <label for="alumnus">UC Alumnus</label>
+                    <input type="checkbox" class="form-checkbox" id="alumnus">
+    
+                    <h3>Select your major(s) of interest:</h3>
+                    <div class="majors-container">
+                    </div>
+    
+                    <input type="button" value="Sign Up" id="sign-up-button">
+                    <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </div>
-
-                <div class="select-container" id="end-time">
-                    <label for="end-time-select">End Time:</label>
-                    <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
-                    <select id="end-time-select" autocomplete="off" required>
-                        <option value="" disabled="disabled" selected="selected">Select Time</option>
-                    </select>
-                </div>
-
-                <label for="alumnus">UC Alumnus</label>
-                <input type="checkbox" class="form-checkbox" id="alumnus">
-
-                <h3>Select your major(s) of interest:</h3>
-                <div class="majors-container">
-                </div>
-
-                <input type="button" value="Sign Up" id="sign-up-button">
-                <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
             </form>
         </div>
 
@@ -79,16 +91,16 @@
         <div class="container registered">
             <div class="detail-box">
                 <p class="success-emoji">🎉</p>
-                <p>We have sent you an email to <a class="admin-email"></a> confirming your reservation.</p>
+                <p>We have sent you an email to <a class="admin-email"></a> confirming your reservation. Be sure to also check your spam inbox if you find that the email is missing.</p>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>University of Cincinnati | © 2019 College of Engineering and Applied Science Tribunal </p>
+        <p>University of Cincinnati | © 2020 College of Engineering and Applied Science Tribunal </p>
         <p>For any questions or comments, contact us at uc.eas.tribunal@gmail.com.</p>
     </footer>
 
-    <script src="../build/scripts/employers.bundle.js" type="text/javascript"></script>
+    <script src="../build/scripts/employers.bundle.js?v=616f11e3b07402abaecc14bd67d9ce03" type="text/javascript"></script>
 </body>
 </html>

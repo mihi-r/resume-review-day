@@ -1,7 +1,9 @@
-import { updateDescription, employerPhoneNumberFormater, generateMajorCheckboxes, generateTimeSelect, signUpAction } from './employersUI';
+import { updateDescription, generateMajorCheckboxes, generateTimeSelect, signUpAction, generateReviewMethodsSelect, generateReviewCountSlider, employerPhoneNumberFormatter } from './employersUI';
 
 updateDescription();
-employerPhoneNumberFormater();
+generateReviewMethodsSelect();
+employerPhoneNumberFormatter();
 generateTimeSelect();
+generateReviewCountSlider();
 generateMajorCheckboxes();
 signUpAction();

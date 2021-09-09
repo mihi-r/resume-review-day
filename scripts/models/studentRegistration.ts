@@ -6,6 +6,7 @@ export class StudentRegistration {
     public email: string;
     public companyId: string;
     public time: string;
+    public slot: string;
     public year: string;
     public major: string;
     public resume: File | undefined;
@@ -15,19 +16,21 @@ export class StudentRegistration {
      * @param name The name of the student.
      * @param email The email of the student.
      * @param companyId The selected company id.
-     * @param time The selected time.
+     * @param time The selected time (if applicable).
+     * @param slot The selected slot (if applicable). s
      * @param year The graduation year of the student.
      * @param major The major of the student.
      * @param resume The resume file of the student.
      */
     constructor(
         name: string, email: string, companyId: string, time: string,
-        year: string, major: string, resume?: File
+        slot: string, year: string, major: string, resume?: File
     ) {
         this.name = name;
         this.email = email;
         this.companyId = companyId;
         this.time = time;
+        this.slot = slot;
         this.year = year;
         this.major = major;
         this.resume = resume;
@@ -43,6 +46,7 @@ export class StudentRegistration {
         submissionFormData.append('yearText', this.year);
         submissionFormData.append('companyIdText', this.companyId);
         submissionFormData.append('timeText', this.time);
+        submissionFormData.append('slotText', this.slot);
         submissionFormData.append('majorText', this.major);
         if (this.resume) {
             submissionFormData.append('resumeFile', this.resume);

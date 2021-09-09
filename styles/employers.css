@@ -1,7 +1,17 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
 
+/* Form */
+form .main-form-area {
+  display: none;
+}
+
 /* Time Select */
+
+form .time-select-container {
+  display: none;
+}
+
 form #start-time.missing,
 form #end-time.missing {
   border-bottom: 2px solid #e00122;
@@ -30,6 +40,21 @@ form .majors-container label {
   cursor: pointer;
   margin: 0 50px;
   display: block;
+}
+
+/* Slider */
+
+form .review-count-slider-container {
+  display: none;
+}
+
+.review-count-slider-container {
+  width: 91%;
+  margin: 14px auto 0;
+}
+
+.review-count-slider-container label {
+  margin-left: 4px;
 }
 
 /* Registration Form */

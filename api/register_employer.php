@@ -8,9 +8,11 @@ $name = "";
 $company = "";
 $email = "";
 $phone = "";
+$review_method = "";
 $dietary = "";
 $start_time = "";
 $end_time = "";
+$max_resumes = "";
 $alumnus = "";
 $majors = "";
 
@@ -18,9 +20,11 @@ $name = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['nameText'])))
 $company = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['companyText'])));
 $email = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['emailText'])));
 $phone = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['phoneText'])));
+$review_method = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['reviewMethodText'])));
 $dietary = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['dietText'])));
 $start_time = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['startTimeText'])));
 $end_time = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['endTimeText'])));
+$max_resumes = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['maxResumesText'])));
 $alumnus = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['alumnusText'])));
 $majors = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['majorsText'])));
 
@@ -54,6 +58,26 @@ if ($admin_email === '' || $event_date === '' || $employers_open === null) {
     die();
 }
 
+// Get review method name for email
+$review_method_name = '';
+
+$sql = 'SELECT name FROM resume_review_methods WHERE id=' . $review_method;
+$result = $mysqli->query($sql);
+
+if ($result) {
+	while ($row = $result->fetch_assoc()) {
+        $review_method_name = $row['name'];
+    }
+    $result->close();
+}
+
+if ($review_method_name === '') {
+    $result_data->data = 'Error occurred while retrieving review method information. Please try again. '
+        . 'If the error persists, contact the email on the bottom.';
+    echo json_encode($result_data);
+    die();
+}
+
 if (!$employers_open) {
     $result_data->data = 'Employer registration is closed.';
     echo json_encode($result_data);
@@ -69,9 +93,8 @@ if (!preg_match("/^[\w\ \'\.]{1,256}$/", $name)) {
 }
 
 // Check company name
-if (!preg_match("/^[\w\ \'\.\&]{1,256}$/", $company)) {
-    $result_data->data = 'The company name, ' . $company . ', is invalid. Please only use latin characters a-z with an optional '
-        . 'apostrophe, ampersand, and period. The company name is also limited to 256 characters.';
+if (!preg_match("/^.{1,256}$/", $company)) {
+    $result_data->data = 'The company name, ' . $company . ', is invalid. The company name is limited to 256 characters.';
     echo json_encode($result_data);
     die();
 }
@@ -91,8 +114,8 @@ if(!preg_match('/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $phone)) {
     die();
 }
 
-$sql ="INSERT INTO resume_review_employers (name, company, email, phone, diet, start, end, alumnus, majors)
-    VALUES ('".$name."','".$company."','".$email."','".$phone."','".$dietary."','".$start_time."','".$end_time."','".$alumnus."','".$majors."')";
+$sql ="INSERT INTO resume_review_employers (name, company, email, phone, review_method, diet, start, end, max_resumes, alumnus, majors)
+    VALUES ('".$name."','".$company."','".$email."','".$phone."','".$review_method."','".$dietary."','".$start_time."','".$end_time."','".$max_resumes."','".$alumnus."','".$majors."')";
     
 $result = $mysqli->query($sql);
 
@@ -114,9 +137,16 @@ $email_msg .= "Please confirm the information below is correct. \n \n";
 $email_msg .= "Name: " . $name . "\n";
 $email_msg .= "Company: " . $company . "\n";
 $email_msg .= "Phone: " . $phone . "\n";
-$email_msg .= "Dietary Restrictions: " . $dietary . "\n";
-$email_msg .= "Start Time: " . date("g:i a", strtotime($start_time)) . "\n";
-$email_msg .= "End Time: " . date("g:i a", strtotime($end_time)) . "\n";
+$email_msg .= "Review Method: " . $review_method_name . "\n";
+if ($review_method === '1') {
+    $email_msg .= "Dietary Restrictions: " . $dietary . "\n";
+}
+if ($review_method === '3') {
+    $email_msg .= "Max resumes to review: " . $max_resumes . "\n";
+} else {
+    $email_msg .= "Start Time: " . date("g:i a", strtotime($start_time)) . "\n";
+    $email_msg .= "End Time: " . date("g:i a", strtotime($end_time)) . "\n";
+}
 $email_msg .= "Alumnus: " . $alumnus . "\n";
 $email_msg .= "Majors Interested: " . $majors . "\n \n";
 $email_msg .= "If you would like to make any changes to the information you have submitted, please reply to this email. Alternatively, you can email " . $admin_email . ". \n \n";
@@ -124,13 +154,14 @@ $email_msg .= "We look forward to seeing you at the event! \n \n";
 $email_msg .= "Thank you, \n";
 $email_msg .= "CEAS Tribunal";
 
-$email_headers = "From: " . $admin_email;
+$email_headers = "From: " . $admin_email . "\r\n";
+$email_headers .= "Cc: " . $admin_email . "\r\n";
 
 if (mail($email, $email_subject, $email_msg, $email_headers)) {
     $result_data->status = 'success';
     echo json_encode($result_data);
 } else {
-    $result_data->data = 'Error occurred while sending the confirmation email. Please contact the email in the description notifying of this error. Do not resumbit the form.';
+    $result_data->data = 'Error occurred while sending the confirmation email. Please contact the email in the description notifying of this error. Do not resubmit the form.';
     echo json_encode($result_data);
 }
 

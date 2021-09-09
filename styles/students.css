@@ -84,11 +84,19 @@ tr:last-child td:last-child{
   cursor: pointer;
 }
 
+.container .employers .review-method {
+  background-color: #cb2d3e30;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #cb2d3e;
+  border: none;
+}
+
 .container .employers .company-info {
   text-align: left;
   padding: 0px 20px;
   background: #ffefc5;
-  box-shadow: inset 0 20px 10px -20px rgba(168, 0, 0, 0.6);
   display: none;
   transform: scaleY(0);
   transform-origin: top;

@@ -22,11 +22,14 @@ export class EmployersInfo {
                     name: employerInfo.name,
                     company: employerInfo.company,
                     companyId: employerInfo.company_id,
+                    reviewMethod: employerInfo.review_method,
                     start: employerInfo.start,
                     end: employerInfo.end,
+                    maxResumes: employerInfo.max_resumes,
                     majors: employerInfo.majors,
-                    unavailableTimes: employerInfo.unavailable_times
-                }
+                    unavailableTimes: employerInfo.unavailable_times,
+                    unavailableSlots: employerInfo.unavailable_slots
+                };
 
                 this.employers.push(employer);
             });
