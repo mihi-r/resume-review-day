@@ -13,6 +13,7 @@ $email = '';
 $year = '';
 $company_id = null;
 $time = '';
+$slot = '';
 $major = '';
 $resume = null;
 
@@ -21,6 +22,7 @@ $email = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['emailText'])
 $year = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['yearText'])));
 $company_id = (int)mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['companyIdText'])));
 $time = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['timeText'])));
+$slot = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['slotText'])));
 $major = mysqli_real_escape_string($mysqli, strip_tags(trim($_POST['majorText'])));
 if (isset($_FILES['resumeFile'])) {
     $resume = $_FILES['resumeFile'];
@@ -70,22 +72,26 @@ if (!$students_open) {
     die();
 }
 
-// Get representative name and company
+// Get representative name, company, review_method, and video call link
 $rep_name = '';
 $company = '';
+$review_method = '';
+$video_call_link = '';
 
-$sql = 'SELECT name, company FROM resume_review_employers WHERE id=' . $company_id;
+$sql = 'SELECT name, company, review_method, video_call_link FROM resume_review_employers WHERE id=' . $company_id;
 $result = $mysqli->query($sql);
 
 if ($result) {
 	while ($row = $result->fetch_assoc()) {
         $rep_name = $row['name'];
         $company = $row['company'];
+        $review_method = $row['review_method'];
+        $video_call_link = $row['video_call_link'];
     }
     $result->close();
 }
 
-if ($rep_name === '' || $company === '') {
+if ($rep_name === '' || $company === '' || $review_method === '') {
     $result_data->data = 'Error occurred while retrieving employer information. Please try again. '
         . 'If the error persists, contact the email on the bottom.';
     echo json_encode($result_data);
@@ -191,8 +197,8 @@ if ($resume) {
 }
 
 // Update student table
-$sql = "INSERT IGNORE INTO resume_review_students (name, company_id, email, time, year, major, resume)
-    VALUES ('".$name."','".$company_id."','".$email."','".$time."','".$year."','".$major."','".$unique_filename."')";
+$sql = "INSERT IGNORE INTO resume_review_students (name, company_id, email, time, slot, year, major, resume)
+    VALUES ('".$name."','".$company_id."','".$email."','".$time."','".$slot."','".$year."','".$major."','".$unique_filename."')";
 
 $result = $mysqli->query($sql);
 $num_of_affected_rows = $mysqli->affected_rows;
@@ -225,11 +231,21 @@ $email_subject = "University of Cincinnati Technical Resume Review Day Registrat
 
 $email_msg = "Hello " . $name . ", \n \n";
 $email_msg .= "Thank you for creating a registration for the University of Cincinnati Technical Resume Review Day. ";
-$email_msg .= "The event will take place on " . date("l, F jS, Y", strtotime($event_date)) . " in " . $event_location . ". The dress attire is business casual. ";
-$email_msg .= "Please come to the lobby 5 minutes before your scheduled time to sign in and CEAS Tribunal representatives while guide you from there. Most importantly, you are required to bring a copy of your resume to the event. \n \n";
-$email_msg .= "During your resume review, you are scheduled to meet with representative " . $rep_name . " from " . $company . " at " . date("g:i a", strtotime($time)) . ". \n \n";
+if ($review_method === '1') {
+    $email_msg .= "The event will take place on " . date("l, F jS, Y", strtotime($event_date)) . " in " . $event_location . ". The dress attire is business casual. ";
+    $email_msg .= "Please come to the lobby 5 minutes before your scheduled time to sign in and CEAS Tribunal representatives while guide you from there. Most importantly, you are required to bring a copy of your resume to the event. \n \n";
+    $email_msg .= "During your resume review, you are scheduled to meet with representative " . $rep_name . " from " . $company . " at " . date("g:i a", strtotime($time)) . ". \n \n";
+    $email_msg .= "We look forward to seeing you at the event! \n \n";
+} elseif ($review_method === '2') {
+    $email_msg .= "The event will take place on " . date("l, F jS, Y", strtotime($event_date)) . ". ";
+    $email_msg .= "During your resume review, you are scheduled to meet with representative " . $rep_name . " from " . $company . " at " . date("g:i a", strtotime($time)) . ". \n \n";
+    $email_msg .= "Please show up to the video call at your scheduled time using the following invite link: " . $video_call_link . "\n \n";
+} elseif ($review_method === '3') {
+    $email_msg .= "You are registered to receive a resume review by email with representative " . $rep_name . " from " . $company . ". \n \n";
+    $email_msg .= "Please allow up to 2 weeks from the event date for the representative to email you a review of your resume. ";
+    $email_msg .= "If you do not receive an email by that time, reply back to this email to notify us of this and we will follow up with the representative. \n \n";
+}
 $email_msg .= "If you would like to make any changes to the information you have submitted, please reply to this email. Alternatively, you can email " . $admin_email . ". \n \n";
-$email_msg .= "We look forward to seeing you at the event! \n \n";
 $email_msg .= "Thank you, \n";
 $email_msg .= "CEAS Tribunal";
 
@@ -239,7 +255,7 @@ if (mail($email, $email_subject, $email_msg, $email_headers)) {
     $result_data->status = 'success';
     echo json_encode($result_data);
 } else {
-    $result_data->data = 'Error occurred while sending the confirmation email. Please contact the email in the description notifying of this error. Do not resumbit the form.';
+    $result_data->data = 'Error occurred while sending the confirmation email. Please contact the email in the description notifying of this error. Do not resubmit the form.';
     echo json_encode($result_data);
 }
 

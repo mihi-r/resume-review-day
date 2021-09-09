@@ -9,6 +9,15 @@ const browserify = require('browserify');
 const tsify = require('tsify');
 const es = require('event-stream');
 const sourcemaps = require('gulp-sourcemaps');
+const version = require('gulp-version-number');
+
+const versionConfig = {
+  'value': '%MDS%',
+  'append': {
+    'key': 'v',
+    'to': ['css', 'js']
+  }
+};
 
 const styles = function () {
   return gulp
@@ -29,7 +38,7 @@ const styles = function () {
 }
 
 const scripts = function () {
-  const entryFiles = ['scripts/employers.ts', 'scripts/students.ts'];
+  const entryFiles = ['scripts/employers.ts', 'scripts/students.ts', 'scripts/admin.ts'];
 
   const tasks = entryFiles.map((entryFile) => {
     return browserify({
@@ -54,9 +63,16 @@ const scripts = function () {
   return es.merge.apply(null, tasks).pipe(gulp.dest('build'));
 }
 
+const views = function () {
+  return gulp
+    .src('./views/*.html')
+    .pipe(version(versionConfig))
+    .pipe(gulp.dest('./views/'));
+};
+
 const watchFiles = function () {
-  gulp.watch(['./scripts/*.ts', './scripts/*/*.ts'], gulp.series(scripts));
-  gulp.watch('./styles/*.css', gulp.series(styles));
+  gulp.watch(['./scripts/*.ts', './scripts/*/*.ts'], gulp.series(scripts, views));
+  gulp.watch('./styles/*.css', gulp.series(styles, views));
 }
 
 const watch = gulp.parallel(scripts, styles, watchFiles);

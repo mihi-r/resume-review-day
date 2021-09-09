@@ -7,6 +7,7 @@ import { Employer, TimeInterval } from './types/types';
 import { convertTo12HourString } from './common/utils';
 import { GradYears } from './models/gradYears';
 import { FileConstants } from './constants/fileConstants';
+import { ReviewMethods } from './models/reviewMethods';
 
 /** 
  * Update the description with the most recent event information.
@@ -67,7 +68,7 @@ export const generateMajorSelect = async function () {
     generateSelectOption(majorSelectElement, 'All Majors', 'All Majors');
     majors.majors.forEach((major) => {
         generateSelectOption(majorSelectElement, major, major);
-    })
+    });
 };
 
 /** 
@@ -89,9 +90,32 @@ export const generateTimeSelect = async function () {
 };
 
 /** 
- * Register the student after clicking the register button.
+ * Generate review methods for review method select filter.
 */
-const registerAction = function(companyId: string, time: string) {
+export const generateReviewMethodSelect = async function () {
+    const reviewMethods = new ReviewMethods();
+    
+    try {
+        await reviewMethods.initData();
+    } catch {
+        displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
+    }
+
+    const reviewMethodSelectElement = document.querySelector('form #review-method-select select') as HTMLSelectElement;
+
+    generateSelectOption(reviewMethodSelectElement, 'All Review Methods', 'All Review Methods');
+    reviewMethods.reviewMethods.forEach((reviewMethod) => {
+        generateSelectOption(reviewMethodSelectElement, reviewMethod.name, reviewMethod.name);
+    });
+};
+
+/** 
+ * Register the student after clicking the register button.
+ * @param companyId: The id of the company.
+ * @param time: The selected time.
+ * @param slot: The select slot.
+*/
+const registerAction = function(companyId: string, time: string = '', slot: string = '') {
     const fileSizeLimit = FileConstants.FILE_SIZE_LIMIT_MB * 1024 * 1024;
 
     const registerButton = document.querySelector('.register #register-button') as HTMLButtonElement;
@@ -112,14 +136,16 @@ const registerAction = function(companyId: string, time: string) {
             formLoader.style.display = 'block';
 
             if (resume.files !== null) {
-                if (resume.files[0] && resume.files[0].size > fileSizeLimit) {
+                if (resume.files.length === 0) {
+                    displayWarning('Please upload a resume (as a PDF).');
+                } else if (resume.files[0].size > fileSizeLimit) {
                     displayWarning('Please choose a resume under 2MB.');
                 } else {
                     let studentRegistration;
                     if (resume.files[0]) {
-                        studentRegistration = new StudentRegistration(name.value, email.value, companyId, time, year.value, major.value, resume.files[0])
+                        studentRegistration = new StudentRegistration(name.value, email.value, companyId, time, slot, year.value, major.value, resume.files[0])
                     } else {
-                        studentRegistration = new StudentRegistration(name.value, email.value, companyId, time, year.value, major.value)
+                        studentRegistration = new StudentRegistration(name.value, email.value, companyId, time, slot, year.value, major.value)
                     }
 
                     try {
@@ -153,12 +179,12 @@ const registerAction = function(companyId: string, time: string) {
 };
 
 /**
- * Generate the form to register for a timeslot.
+ * Generate the form to register for a review slot.
  * @param employer The employer information to display.
- * @param selectedDisplayTime The display time for the chosen timeslot.
- * @param selectedInternalTime The internal time for the chosen timeslot.
+ * @param selectedDisplayName The display name for the chosen review slot.
+ * @param selectedInternalName The internal name for the chosen review slot.
  */
-const generateRegisterFrom = async function (employer: Employer, selectedDisplayTime: string, selectedInternalTime: string) {
+const generateRegisterFrom = async function (employer: Employer, selectedDisplayName: string, selectedInternalName: string) {
     const eventInfo = new EventInfo();
     
     try {
@@ -173,17 +199,19 @@ const generateRegisterFrom = async function (employer: Employer, selectedDisplay
     registerContainer.scrollIntoView({behavior: 'smooth', block: 'start'})
 
     const companyNameSpan = document.querySelector('.register .selected-company-name') as HTMLSpanElement;
-    const companyTimeSpan = document.querySelector('.register .selected-company-time') as HTMLSpanElement;
-    const reviewInterval = document.querySelector('.register .review-interval') as HTMLSpanElement;
+    const reviewMethodText = document.querySelector('.register .review-method-text') as HTMLSpanElement;
     const majorSelectElement = document.querySelector('.register #student-major-select select') as HTMLSelectElement;
     const yearSelectElement = document.querySelector('.register #year-select select') as HTMLSelectElement;
     const resumeUploadElement = document.querySelector('.register #resume-file') as HTMLInputElement;
     const resumeUploadText = document.querySelector('.register .file-text span') as HTMLSpanElement;
 
     companyNameSpan.textContent = employer.company;
-    companyTimeSpan.textContent = selectedDisplayTime;
-    reviewInterval.textContent = String(eventInfo.reviewInterval);
-
+    if (employer.reviewMethod === String(3)) {
+        reviewMethodText.textContent = 'through email';
+    } else {
+        reviewMethodText.textContent = `at ${selectedDisplayName} for approximately ${eventInfo.reviewInterval} minutes`;
+    }
+    
     // Only generate majors if it hasn't been generated before
     if (majorSelectElement.children.length === 1) {
         const majors = new Majors();
@@ -219,19 +247,32 @@ const generateRegisterFrom = async function (employer: Employer, selectedDisplay
         }
     };
 
-    registerAction(employer.companyId, selectedInternalTime);
+    if (employer.reviewMethod === String(3)) {
+        registerAction(employer.companyId, '', selectedInternalName);
+    } else {
+        registerAction(employer.companyId, selectedInternalName, '');
+    }
 };
 
 /**
- * Generate a timeslot table for an employer. Timeslots will not be generated for the lunch break.
+ * Generate a review table for an employer. Timeslots will not be generated for the lunch break.
  * @param container The container to add the generated table to.
  * @param employer The employer information to use for the table.
  * @param lunchStart The start time of the lunch break.
  * @param lunchEnd The end time of the lunch break.
  * @param interval The intervals for each timeslot.
  * @param timeOption The timeslot to show. If 'All Times' is supplied, then all times will be shown.
+ * @param reviewMethodNameOption The review methods to show. If 'All Review Methods' is supplied, then all review methods will be shown.
  */
-const generateEmployerTimeslots = function (container: HTMLDivElement, employer: Employer, lunchStart: string, lunchEnd: string, interval: number, timeOption: string) {
+const generateEmployerReviewSlots = async function (container: HTMLDivElement, employer: Employer, lunchStart: string, lunchEnd: string, interval: number, timeOption: string, reviewMethodNameOption: string) {
+    const reviewMethods = new ReviewMethods();
+
+    try {
+        await reviewMethods.initData();
+    } catch {
+        displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
+    }
+
     // Create table
     const companyTable = document.createElement('table');
     companyTable.setAttribute('class', 'company-times');
@@ -253,6 +294,22 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
     tableTr.appendChild(companyNameTh);
     tableTr.appendChild(companyInfoIconTh);
     companyTable.appendChild(tableTr);
+
+    // Create review method header
+    const reviewMethodIndex = reviewMethods.reviewMethods.findIndex(reviewMethod => String(reviewMethod.id) === employer.reviewMethod);
+    let reviewMethodName = '';
+    if (reviewMethodIndex > -1) {
+        tableTr = document.createElement('tr');
+        const reviewMethodTh = document.createElement('th');
+
+        reviewMethodName = reviewMethods.reviewMethods[reviewMethodIndex].name;
+        reviewMethodTh.textContent = reviewMethodName;
+
+        reviewMethodTh.setAttribute('class', 'review-method');
+        reviewMethodTh.setAttribute('colspan', '2');
+        tableTr.appendChild(reviewMethodTh);
+        companyTable.appendChild(tableTr);
+    }
 
     // Create company info cell
     tableTr = document.createElement('tr');
@@ -288,67 +345,55 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
                 companyInfoTd.style.transform = 'scaleY(1)';
             }, 100);
         }
-    })
+    });
 
-    const employerStartDate = new Date(`Jan 1, 2000 ${employer.start}`);
-    const employerEndDate = new Date(`Jan 1, 2000 ${employer.end}`);
-    const lunchStartDate = new Date(`Jan 1, 2000 ${lunchStart}`);
-    const lunchEndDate = new Date(`Jan 1, 2000 ${lunchEnd}`);
-
-    const timeIntervals: Array<TimeInterval> = []
-
-    // If employer is only scheduled before lunch
-    if (employerStartDate < lunchStartDate && employerEndDate <= lunchEndDate) {
-        let firstTimeInterval: TimeInterval = {
-            start: employerStartDate,
-            end: employerEndDate
+    // Only generate table based on the review method filter
+    if (reviewMethodNameOption === 'All Review Methods' || reviewMethodNameOption === reviewMethodName) {
+        if (employer.reviewMethod === String(3)) {
+            generateEmployerNumberedSlots(employer, companyTable);
+        } else {
+            generateEmployerTimeslots(employer, lunchStart, lunchEnd, interval, timeOption, companyTable);
         }
-
-        // Not allowing students to select a timeslot during lunch
-        if (employerEndDate > lunchStartDate) {
-            firstTimeInterval.end = lunchStartDate;
-        }
-
-        timeIntervals.push(firstTimeInterval);
     }
-    // If employer is only scheduled after lunch
-    else if (employerStartDate >= lunchStartDate) {
-        let firstTimeInterval: TimeInterval = {
-            start: employerStartDate,
-            end: employerEndDate
-        }
 
-        // Not allowing students to select a timeslot during lunch
-        if (employerStartDate < lunchEndDate) {
-            firstTimeInterval.start = lunchEndDate;
-        }
-
-        timeIntervals.push(firstTimeInterval);
+    // Only generate the table if there are available timeslots
+    if (companyTable.children.length > 3)
+    {
+        container.appendChild(companyTable);
     }
-    // If employer is scheduled before and after lunch
-    else {
-        const firstTimeInterval: TimeInterval = {
-            start: employerStartDate,
-            end: lunchStartDate
-        }
-    
-        const secondTimeInterval: TimeInterval = {
-            start: lunchEndDate,
-            end: employerEndDate
-        }
+};
 
-        timeIntervals.push(firstTimeInterval);
-        timeIntervals.push(secondTimeInterval);
+/**
+ * Generate a timeslot table for an employer. Timeslots will not be generated for the lunch break.
+ * @param container The container to add the generated table to.
+ * @param employer The employer information to use for the table.
+ * @param lunchStart The start time of the lunch break.
+ * @param lunchEnd The end time of the lunch break.
+ * @param interval The intervals for each timeslot.
+ * @param timeOption The timeslot to show. If 'All Times' is supplied, then all times will be shown.
+ * @param companyTable The company table to append the timeslots to.
+ */
+const generateEmployerTimeslots = function(employer: Employer, lunchStart: string, lunchEnd: string, interval: number, timeOption: string, companyTable: HTMLTableElement) {
+    const firstTimeInterval: TimeInterval = {
+        start: employer.start,
+        end: lunchStart
+    }
+
+    const secondTimeInterval: TimeInterval = {
+        start: lunchEnd,
+        end: employer.end
     }
 
     // Add times
+    const timeIntervals = [firstTimeInterval, secondTimeInterval];
     timeIntervals.forEach((timeInterval) => {
-        let currTimeDate = timeInterval.start;
-        const stopTimeDate = timeInterval.end;
+        let currTimeDate = new Date(`Jan 1, 2000 ${timeInterval.start}`);
+        const stopTimeDate = new Date(`Jan 1, 2000 ${timeInterval.end}`);
 
         let currTime = currTimeDate.getHours();
+        const stopTime = stopTimeDate.getHours();
 
-        while (currTimeDate < stopTimeDate) {
+        while (currTime < stopTime) {
             const currTimeMin = currTimeDate.getMinutes();
 
             const displayName = convertTo12HourString(currTime, currTimeMin);
@@ -356,24 +401,7 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
             if (!employer.unavailableTimes.includes(internalName)) {
                 if (timeOption == internalName || timeOption == 'All Times')
                 {
-                    tableTr = document.createElement('tr');
-                    const tableTd = document.createElement('td');
-            
-                    tableTd.textContent = displayName;
-                    tableTd.setAttribute('colspan', '2');
-            
-                    tableTr.appendChild(tableTd);
-                    companyTable.appendChild(tableTr);
-        
-                    tableTd.onclick = function(e) {
-                        const currentSelectedTime = document.querySelector('.employers .selected') as HTMLTableDataCellElement;
-                        if (currentSelectedTime != null) {
-                            currentSelectedTime.classList.toggle('selected');
-                        }
-                        
-                        tableTd.classList.toggle('selected');
-                        generateRegisterFrom(employer, displayName, internalName);
-                    }
+                    generateEmployerReviewTableSlot(employer, displayName, internalName, companyTable);
                 }
             }
 
@@ -381,20 +409,54 @@ const generateEmployerTimeslots = function (container: HTMLDivElement, employer:
             currTime = currTimeDate.getHours();
         }
     });
+}
 
-    // Only generate the table if there are available timeslots
-    if (companyTable.children.length > 2)
-    {
-        container.appendChild(companyTable);
+const generateEmployerNumberedSlots = function(employer: Employer, companyTable: HTMLTableElement) {
+    for (let i = 1; i <= employer.maxResumes; i++) {
+        const displayName = `Slot ${i}`;
+        const internalName = String(i);
+
+        if (!employer.unavailableSlots.includes(internalName)) {
+            generateEmployerReviewTableSlot(employer, displayName, internalName, companyTable);
+        }
     }
-};
+}
+
+
+/**
+ * Generate a slot for the employer table.
+ * @param employer The employer information to display.
+ * @param displayName The display name for the chosen review slot.
+ * @param internalName The internal name for the chosen review slot.
+ */
+const generateEmployerReviewTableSlot = function(employer: Employer, displayName: string, internalName: string, companyTable: HTMLTableElement) {
+    const tableTr = document.createElement('tr');
+    const tableTd = document.createElement('td');
+
+    tableTd.textContent = displayName;
+    tableTd.setAttribute('colspan', '2');
+
+    tableTr.appendChild(tableTd);
+    companyTable.appendChild(tableTr);
+
+    tableTd.onclick = function() {
+        const currentSelectedTime = document.querySelector('.employers .selected') as HTMLTableDataCellElement;
+        if (currentSelectedTime != null) {
+            currentSelectedTime.classList.toggle('selected');
+        }
+        
+        tableTd.classList.toggle('selected');
+        generateRegisterFrom(employer, displayName, internalName);
+    }
+}
 
 /**
  * Display employer timeslot tables.
  * @param majorOption The major to filter by.
  * @param timeOption The time to filter by.
+ * @param reviewMethodNameOption The review method to filter by.
  */
-const displayEmployers = async function (majorOption: string, timeOption: string) {
+const displayEmployers = async function (majorOption: string, timeOption: string, reviewMethodNameOption: string) {
     const employersTimeslots = document.querySelector('.timeslots .employers') as HTMLDivElement;
     const employersInfo = new EmployersInfo();
     const eventInfo = new EventInfo();
@@ -411,11 +473,11 @@ const displayEmployers = async function (majorOption: string, timeOption: string
         employersTimeslots.firstChild.remove();
     }
 
-    employersInfo.employers.forEach((employer) => {
+    for (const employer of employersInfo.employers) {
         if (employer.majors.includes(majorOption) || majorOption == 'All Majors') {
-            generateEmployerTimeslots(employersTimeslots, employer, eventInfo.lunchStartTime, eventInfo.lunchEndTime, eventInfo.reviewInterval, timeOption);
+            await generateEmployerReviewSlots(employersTimeslots, employer, eventInfo.lunchStartTime, eventInfo.lunchEndTime, eventInfo.reviewInterval, timeOption, reviewMethodNameOption);
         }
-    });
+    }
 
     if (employersTimeslots.children.length === 0) {
         const notFoundMessage = document.createElement('p');
@@ -434,8 +496,13 @@ export const filterAction = function() {
     filterButton.onclick = (() => {
         const majorSelectElement = document.querySelector('form #major-select select') as HTMLSelectElement;
         let majorOption = majorSelectElement.options[majorSelectElement.selectedIndex].value;
+
         const timeSelectElement = document.querySelector('form #time-select select') as HTMLSelectElement;
         let timeOption = timeSelectElement.options[timeSelectElement.selectedIndex].value;
+
+        const reviewMethodSelectElement = document.querySelector('form #review-method-select select') as HTMLSelectElement;
+        let reviewMethodNameOption = reviewMethodSelectElement.options[reviewMethodSelectElement.selectedIndex].value;
+
         const timeslotPage = document.querySelector('.timeslots') as HTMLDivElement;
     
         if (!majorOption) {
@@ -445,8 +512,12 @@ export const filterAction = function() {
         if (!timeOption) {
             timeOption = 'All Times';
         }
+
+        if (!reviewMethodNameOption) {
+            reviewMethodNameOption = 'All Review Methods';
+        }
     
-        displayEmployers(majorOption, timeOption);
+        displayEmployers(majorOption, timeOption, reviewMethodNameOption);
 
         timeslotPage.style.display = 'block';
         timeslotPage.scrollIntoView({behavior: 'smooth', block: 'start'});

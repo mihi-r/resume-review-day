@@ -1,8 +1,10 @@
-import { generateCheckboxes, displayWarning, validateInputFieldData, validateSelectFieldData, generateTimeSelectOptions, phoneNumberFormater } from './common/uiElements';
+import { generateCheckboxes, displayWarning, validateInputFieldData, validateSelectFieldData, generateTimeSelectOptions, phoneNumberFormatter } from './common/uiElements';
 import { Majors } from './models/majors';
 import { EventInfo } from './models/eventInfo';
 import { EmployerRegistration } from './models/employerRegistration';
 import { convertTo12HourString } from './common/utils';
+import { ReviewMethods } from './models/reviewMethods';
+import { GeneralConstants } from './constants/generalConstants';
 
 /** 
  * Update the description with the most recent event information.
@@ -55,6 +57,102 @@ export const updateDescription = async function () {
 };
 
 /** 
+ * Generates radio select for each review method.
+*/
+export const generateReviewMethodsSelect = async function () {
+    const mainFormArea = document.querySelector('form .main-form-area') as HTMLDivElement;
+    const reviewMethodContainer = document.querySelector('form .radio-select-container');
+    const dietaryInput = document.querySelector('form #dietary') as HTMLInputElement;
+    const timeSelectContainer = document.querySelector('form .time-select-container') as HTMLDivElement;
+    const reviewCountSliderContainer = document.querySelector('form .review-count-slider-container') as HTMLDivElement;
+    const reviewMethods = new ReviewMethods();
+
+    try {
+        await reviewMethods.initData();
+    } catch {
+        displayWarning('Information could not be fetched. Please refresh the page. Contact the email on the bottom if this error persists.');
+    }
+
+    // Create radio buttons container
+    const radioButtonsContainer = document.createElement('div');
+    radioButtonsContainer.setAttribute('class', 'radio-buttons');
+
+    reviewMethods.reviewMethods.forEach((reviewMethod) => {
+        if (reviewMethod.active) {
+            // Create radio button container
+            const radioButtonContainer = document.createElement('div');
+            radioButtonContainer.setAttribute('class', 'radio-button')
+
+            // Create radio button area
+            const radioButtonArea = document.createElement('div');
+
+            // Create radio button input
+            const radioButtonInput = document.createElement('input');
+            radioButtonInput.setAttribute('type', 'radio');
+            radioButtonInput.setAttribute('name', GeneralConstants.REVIEW_METHODS_RADIO_SELECT_NAME);
+            radioButtonInput.setAttribute('id', `review-method-${reviewMethod.id}`);
+            radioButtonInput.setAttribute('value', String(reviewMethod.id));
+
+            // Create radio button label
+            const radioButtonLabel = document.createElement('label');
+            radioButtonLabel.setAttribute('for', `review-method-${reviewMethod.id}`);
+            radioButtonLabel.textContent = reviewMethod.name;
+
+            // Create radio button icon
+            const radioButtonIcon = document.createElement('i');
+            radioButtonIcon.setAttribute('class', 'fas fa-check check');
+
+            // Create radio button description paragraph
+            const radioButtonDescriptionPara = document.createElement('p');
+            radioButtonDescriptionPara.setAttribute('class', 'radio-button-description');
+            radioButtonDescriptionPara.textContent = reviewMethod.description;
+
+            // Create radio button description button
+            const radioButtonDescriptionButton = document.createElement('button');
+            radioButtonDescriptionButton.setAttribute('type', 'button');
+            radioButtonDescriptionButton.textContent = 'Show Details'
+            radioButtonDescriptionButton.onclick = (() => {
+                radioButtonDescriptionPara.classList.toggle('active');
+                if (radioButtonDescriptionButton.textContent === 'Show Details') {
+                    radioButtonDescriptionButton.textContent = 'Close Details'
+                } else {
+                    radioButtonDescriptionButton.textContent = 'Show Details'
+                }
+            });
+
+            radioButtonContainer.appendChild(radioButtonArea);
+            radioButtonContainer.appendChild(radioButtonDescriptionPara);
+            radioButtonContainer.appendChild(radioButtonDescriptionButton);
+            radioButtonArea.appendChild(radioButtonInput);
+            radioButtonArea.appendChild(radioButtonLabel);
+            radioButtonArea.appendChild(radioButtonIcon);
+            radioButtonsContainer.appendChild(radioButtonContainer);
+
+            radioButtonInput.onchange = (() => {
+                mainFormArea.style.display = 'block';
+                if (radioButtonInput.checked) {
+                    if (radioButtonInput.value === '1') {
+                        dietaryInput.style.display = 'block';
+                    } else {
+                        dietaryInput.style.display = 'none';
+                    }
+
+                    if (radioButtonInput.value === '3') {
+                        timeSelectContainer.style.display = 'none';
+                        reviewCountSliderContainer.style.display = 'block';
+                    } else {
+                        timeSelectContainer.style.display = 'block';
+                        reviewCountSliderContainer.style.display = 'none';
+                    }
+                }
+            });
+        }
+    });
+
+    reviewMethodContainer?.appendChild(radioButtonsContainer);
+}
+
+/** 
  * Generates checkboxes for each major.
 */
 export const generateMajorCheckboxes = async function () {
@@ -70,6 +168,14 @@ export const generateMajorCheckboxes = async function () {
     if (majorContainer !== null) {
         generateCheckboxes(majorContainer, majors.majors, 'major')
     }
+};
+
+export const generateReviewCountSlider = function() {
+    const reviewCountSlider = document.querySelector('form .review-count-slider-container .slider') as HTMLInputElement;
+    const maxReviewCount = document.querySelector('form .review-count-slider-container .max-review-count') as HTMLSpanElement;
+    reviewCountSlider.oninput = (() => {
+        maxReviewCount.textContent = reviewCountSlider.value;
+    });
 };
 
 /** 
@@ -106,9 +212,9 @@ export const generateTimeSelect = async function () {
 /**
  * Adds '-' for the employer phone number input.
  */
-export const employerPhoneNumberFormater = function () {
+export const employerPhoneNumberFormatter = function () {
     const phoneNumberInput = document.querySelector('.intro #phone') as HTMLInputElement;
-    phoneNumberFormater(phoneNumberInput);
+    phoneNumberFormatter(phoneNumberInput);
 };
 
 /** 
@@ -147,6 +253,7 @@ export const signUpAction = function() {
         const company = document.querySelector('form #company') as HTMLInputElement;
         const email = document.querySelector('form #email') as HTMLInputElement;
         const phone = document.querySelector('form #phone') as HTMLInputElement;
+        const reviewMethod = document.querySelector(`input[name="${GeneralConstants.REVIEW_METHODS_RADIO_SELECT_NAME}"]:checked`) as HTMLInputElement;
         const dietary = document.querySelector('form #dietary') as HTMLInputElement;
     
         const startTimeSelect = document.querySelector('form #start-time select') as HTMLSelectElement;
@@ -154,11 +261,16 @@ export const signUpAction = function() {
         const endTimeSelect = document.querySelector('form #end-time select') as HTMLSelectElement;
         const endTime = endTimeSelect.options[endTimeSelect.selectedIndex];
 
+        const maxResumesCount = document.querySelector('form .review-count-slider-container .slider') as HTMLInputElement;
+
         const majorsSelect = getAllMajorsSelected();
     
         const alumnusCheckbox = document.querySelector('form #alumnus') as HTMLInputElement;
 
-        if(!validateInputFieldData(name, company, email, phone) && !validateSelectFieldData(startTimeSelect, endTimeSelect)){
+
+        if(!validateInputFieldData(name, company, email, phone) && 
+            (reviewMethod.value === '3' || !validateSelectFieldData(startTimeSelect, endTimeSelect))
+        ){
             if (majorsSelect) {
                 let alumnusStatus = 'No';
             
@@ -169,7 +281,7 @@ export const signUpAction = function() {
                 signUpButton.style.display = 'none';
                 formLoader.style.display = 'block';
 
-                const employerRegistration = new EmployerRegistration(name.value, company.value, email.value, phone.value, dietary.value, alumnusStatus, startTime.value, endTime.value, majorsSelect);
+                const employerRegistration = new EmployerRegistration(name.value, company.value, email.value, phone.value, reviewMethod.value, dietary.value, alumnusStatus, startTime.value, endTime.value, maxResumesCount.value, majorsSelect);
                 try {
                     await employerRegistration.sendData();
 

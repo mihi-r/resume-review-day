@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair.">
+    <meta name="description" content="Resume Review Day is an event hosted by the College of Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair.">
     <title>Resume Review Day Student Registration</title>
-    <link rel="stylesheet" type="text/css" href="../build/main.min.css">
-    <link rel="stylesheet" type="text/css" href="../build/students.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../build/main.min.css?v=616f11e3b07402abaecc14bd67d9ce03">
+    <link rel="stylesheet" type="text/css" href="../build/students.min.css?v=616f11e3b07402abaecc14bd67d9ce03">
+    <link rel="stylesheet" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css?v=616f11e3b07402abaecc14bd67d9ce03">
 </head>
 <body>
     <div class="intro">
@@ -20,11 +20,13 @@
                 <h1>Resume Review Day Student Registration</h1>
             </div>
             <div class="intro-info">
-                <p>Resume Review Day is an event hosted by the Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for <span class="review-interval"></span> minute intervals to receive resume feedback from industry leaders and also gives students the ability to network with employers before the Technical Career Fair.
+                <p>Resume Review Day is an event hosted by the College of Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair. This event gives students the opportunity to sign up for <span class="review-interval"></span> minute intervals to receive resume feedback from industry leaders and also gives students the ability to network with employers before the Technical Career Fair.
                     
                     Resume Review Day takes place on <span class="event-date"></span> in <span class="location"></span>. <br><br>
 
-                    Select a timeslot with an employer by browsing all of the available options or filter by major and a desired time. You are able to register for up to <span class="review-max"></span> different employer(s). The last day to sign up will be on <span class="deadline"></span>. <br><br>
+                    Select a timeslot with an employer by browsing all of the available options or filter by major, a desired time (if applicable), and a desired review method. You are able to register for up to <span class="review-max"></span> different employer(s). The last day to sign up will be on <span class="deadline"></span>.
+
+                    Further instructions will be sent to your email after signing up.<br><br>
 
                     If you have any questions, please contact us at <a class="admin-email"></a>.
                 </p>
@@ -41,6 +43,13 @@
                     <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
                     <select autocomplete="off" required>
                         <option value="" disabled="disabled" selected="selected">Select Time</option>
+                    </select>
+                </div>
+
+                <div class="select-container" id="review-method-select">
+                    <i class="dropdown fas fa-chevron-circle-down" aria-hidden="true"></i>
+                    <select required>
+                        <option value="" disabled="disabled" selected="selected">Select Review Method</option>
                     </select>
                 </div>
     
@@ -64,7 +73,7 @@
 
     <div class="timeslots">
         <div class="container">
-            <h2 id="timeslot-title">Select Timeslot <i class="far fa-clock"></i></h3> 
+            <h2 id="timeslot-title">Select Review Slot <i class="far fa-clock"></i></h3> 
                 <div class="employers"></div>
             </div>
         </div>
@@ -72,10 +81,10 @@
 
     <div class="register">
         <div class="container">
-            <h2 id="register-title">Confirm Your Timeslot <i class="far fa-calendar-check"></i></h3> 
+            <h2 id="register-title">Confirm Your Review Slot <i class="far fa-calendar-check"></i></h3> 
             
             <form>
-                <p>You have selected to get your resume reviewed with <span class="selected-company-name">Company A</span> at <span class="selected-company-time">12:00 PM</span> for approximately <span class="review-interval"></span> minutes. If you would like to change your timeslot, you can <a href="#timeslot-title">go back and select a different time</a>, otherwise, you can continue to register.</p>
+                <p class=>You have selected to receive your resume review with <span class="selected-company-name">Company A</span> <span class="review-method-text"></span>. If you would like to change your review slot, you can <a href="#timeslot-title">go back and select a different one</a>, otherwise, you can continue to register.</p>
 
                 <input type="text" id="name" name="name" placeholder="Full Name" autocomplete="off" required>
 
@@ -107,9 +116,9 @@
     </div>
 
     <footer>
-        <p>University of Cincinnati | © 2019 College of Engineering and Applied Science Tribunal </p>
+        <p>University of Cincinnati | © 2020 College of Engineering and Applied Science Tribunal </p>
         <p>For any questions or comments, contact us at uc.eas.tribunal@gmail.com.</p>
     </footer>
 
-    <script src="../build/scripts/students.bundle.js" type="text/javascript"></script>
+    <script src="../build/scripts/students.bundle.js?v=616f11e3b07402abaecc14bd67d9ce03" type="text/javascript"></script>
 </body>

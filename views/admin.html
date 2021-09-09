@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Resume Review Day is an event hosted by the College of Engineering and Applied Science Tribunal in order to help prepare students for the Career Fair.">
+    <title>Resume Review Day Admin</title>
+    <link rel="stylesheet" type="text/css" href="../build/main.min.css?v=616f11e3b07402abaecc14bd67d9ce03">
+    <link rel="stylesheet" type="text/css" href="../build/admin.min.css?v=616f11e3b07402abaecc14bd67d9ce03">
+    <link rel="stylesheet" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css?v=616f11e3b07402abaecc14bd67d9ce03">
+</head>
+<body>
+    <div class="intro">
+        <header>
+            <a href="https://tribunal.uc.edu"><img src="../images/tribunal_logo.png" alt="Tribunal logo"></a>
+        </header>
+
+        <div class="container main">
+            <div class="title">
+                <h1>Resume Review Day Admin</h1>
+            </div>
+            <form>
+                    <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" aria-label="Username" required>
+                    <input type="password" id="password" name="password" placeholder="Password" autocomplete="off" aria-label="Password" required>
+                    <input type="button" value="Download Resumes" id="download-button">
+                    <input type="button" value="Reset Resume Review Day" id="reset-button">
+
+                    <div class="continue-reset">
+                        <label for="continue-reset">Are you sure you want to reset Resume Review Day? You cannot recover data after this. Type in "Yes" below to continue.</label>
+                        <input type="text" id="continue-reset" name="continue-reset" placeholder="" autocomplete="off">
+                        <input type="button" value="Continue Reset" id="reset-continue-button">
+                    </div>
+                    <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            </form>
+        </div>
+
+        <div class="container reset-success">
+            <div class="detail-box">
+                <p>You have successfully removed entries in the student table, employers table, and have deleted all resumes.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>University of Cincinnati | © 2019 College of Engineering and Applied Science Tribunal </p>
+        <p>For any questions or comments, contact us at uc.eas.tribunal@gmail.com.</p>
+    </footer>
+
+    <script src="../build/scripts/admin.bundle.js?v=616f11e3b07402abaecc14bd67d9ce03" type="text/javascript"></script>
+</body>
+</html>

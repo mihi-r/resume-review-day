@@ -225,7 +225,7 @@ export const validateFileFieldData = function validateDataForMissingValues(...fi
 /**
  * Adds '-' for the phone number input.
  */
-export const phoneNumberFormater = function (phoneNumberInput: HTMLInputElement) {
+export const phoneNumberFormatter = function (phoneNumberInput: HTMLInputElement) {
     phoneNumberInput.onkeyup = ((event) => {
         if ((phoneNumberInput.value.length === 3 || phoneNumberInput.value.length === 7)
         && phoneNumberInput.value !== ''

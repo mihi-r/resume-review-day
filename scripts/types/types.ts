@@ -18,25 +18,45 @@ interface EmployerInfo {
     name: string;
     company: string;
     company_id: string;
+    review_method: string;
     start: string;
     end: string;
+    max_resumes: number;
     majors: Array<string>;
-    unavailable_times: Array<string>
+    unavailable_times: Array<string>;
+    unavailable_slots: Array<string>;
+}
+
+interface ReviewMethodInfo {
+    id: number;
+    name: string;
+    description: string;
+    active: number;
+}
+
+export interface ReviewMethod {
+    id: number;
+    name: string;
+    description: string;
+    active: boolean;
 }
 
 export interface Employer {
     name: string;
     company: string;
     companyId: string;
+    reviewMethod: string;
     start: string;
     end: string;
+    maxResumes: number;
     majors: Array<string>;
-    unavailableTimes: Array<string>
+    unavailableTimes: Array<string>;
+    unavailableSlots: Array<string>;
 }
 
 export interface TimeInterval {
-    start: Date;
-    end: Date;
+    start: string;
+    end: string;
 }
 
 export interface APIResponse {
@@ -62,4 +82,12 @@ export interface RegistrationAPIResponse extends APIResponse {
 
 export interface EmployerInfoAPIResponse extends APIResponse {
     data: Array<EmployerInfo>;
+}
+
+export interface ReviewMethodsAPIResponse extends APIResponse {
+    data: Array<ReviewMethodInfo>;
+}
+
+export interface ResetAPIResponse extends APIResponse {
+    data: string;
 }

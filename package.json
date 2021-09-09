@@ -11,6 +11,7 @@
     "url": "https://github.com/mihi-r/resume-review-day"
   },
   "dependencies": {
+    "gulp-version-number": "^0.2.4",
     "npm": "^6.1.0"
   },
   "devDependencies": {
@@ -21,11 +22,11 @@
     "gulp-css-purge": "^3.0.9",
     "gulp-rename": "^1.4.0",
     "gulp-sourcemaps": "^2.6.5",
-    "gulp-typescript": "^5.0.1",
+    "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-uglify": "^3.0.2",
     "rollup-stream": "^1.24.1",
     "tsify": "^4.0.1",
-    "typescript": "^3.5.3",
+    "typescript": "^4.0.2",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
